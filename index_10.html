@@ -1,0 +1,1619 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deal Lens — property deal comparator</title>
+<meta name="description" content="Compare up to three property deals — land, apartments, under-construction or industrial — on all-in cost, leverage, tax and a stress-tested multi-year outcome.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f0;--surf:#fff;--surf2:#f7f9f8;--line:#dde3e1;--line2:#eaefed;
+ --ink:#0f1719;--mut:#5d6d72;--faint:#8c9a9e;
+ --a:#1d5c63;--a2:#e4efee;--b:#8a4b8f;--b2:#f1e8f2;--c:#a1662f;--c2:#f6ece2;
+ --pos:#17795e;--neg:#b33a2b;--hi:#c98a00;
+ --sh:0 1px 2px rgba(15,23,25,.05),0 4px 14px rgba(15,23,25,.05);--r:12px;--r2:8px}
+[data-theme=dark]{--bg:#0e1315;--surf:#161d20;--surf2:#1b2326;--line:#263134;--line2:#1f292c;
+ --ink:#e6ecea;--mut:#93a3a6;--faint:#6d7c80;--a:#4fc3c9;--a2:#16302f;--b:#c58ecb;--b2:#2b1f2e;
+ --c:#d9a066;--c2:#2e2418;--pos:#3fbf95;--neg:#e0705c;--hi:#e5aa33;
+ --sh:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 18px 90px}
+h1,h2,h3{letter-spacing:-.022em;font-weight:700}
+h1{font-size:clamp(25px,4vw,38px);line-height:1.07;font-weight:800}
+h2{font-size:19px}h3{font-size:15px;font-weight:600}
+.n{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.mut{color:var(--mut)}.pos{color:var(--pos)}.neg{color:var(--neg)}
+.eyebrow{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--a)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.sec{margin-top:32px}.sub{color:var(--mut);font-size:14px;max-width:86ch;margin-top:5px}
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+ backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-bottom:24px}
+.hin{max-width:1240px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.02em}
+.dot{width:19px;height:19px;border-radius:5px;background:var(--a);position:relative;flex:none}
+.dot::after{content:"";position:absolute;inset:5px 5px auto auto;width:6px;height:6px;border-radius:2px;background:var(--hi)}
+.sp{flex:1}
+.tag{font:600 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
+ color:var(--a);background:var(--a2);border:1px solid var(--a);border-radius:99px;padding:5px 10px;white-space:nowrap}
+@media(max-width:820px){.hide-sm{display:none}}
+.btn{background:var(--surf);border:1px solid var(--line);border-radius:99px;color:var(--mut);
+ padding:7px 13px;cursor:pointer;font:600 12px/1 Inter}
+.btn:hover{color:var(--a);border-color:var(--a)}
+.btn:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.btn.pri{background:var(--a);color:#fff;border-color:var(--a)}
+.btn.pri:hover{opacity:.9;color:#fff}
+.hero{padding:2px 0 4px;max-width:74ch}
+.hero p{margin-top:10px;color:var(--mut);max-width:70ch;font-size:15.5px}
+.hz{margin-top:18px;padding:14px 17px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hz .lb{font:700 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.hzbtns{display:flex;gap:0;border:1.5px solid var(--line);border-radius:99px;overflow:hidden}
+.hzbtns button{background:transparent;border:0;border-right:1px solid var(--line);color:var(--mut);
+ padding:9px 18px;cursor:pointer;font:600 13px/1 Inter;transition:.15s;white-space:nowrap}
+.hzbtns button:last-child{border-right:0}
+.hzbtns button:hover{color:var(--a);background:var(--a2)}
+.hzbtns button[aria-pressed=true]{background:var(--a);color:#fff}
+.hzbtns button:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
+.hz .note{font-size:12.5px;color:var(--mut);flex:1;min-width:200px}
+.hz .note b{color:var(--ink);font-weight:600}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+input[type=month]{font-family:Inter;font-weight:500}
+.prog{margin-top:12px;padding:14px 17px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.meter{flex:1;min-width:160px;height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--a);transition:width .25s}
+.prog .pt{font:600 12.5px/1 Inter;color:var(--mut)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:600 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.05em;text-transform:uppercase;
+ padding:5px 9px;border-radius:99px;border:1px solid var(--line);color:var(--faint)}
+.chip.on{border-color:var(--pos);color:var(--pos)}
+.cols{display:grid;grid-template-columns:repeat(var(--nc,2),1fr);gap:14px;margin-top:14px}
+.pane{padding:16px 17px}
+.pane[data-id=A]{border-top:3px solid var(--a)}
+.pane[data-id=B]{border-top:3px solid var(--b)}
+.pane[data-id=C]{border-top:3px solid var(--c)}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+.plab{font:700 11px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+.pane[data-id=A] .plab{color:var(--a)}.pane[data-id=B] .plab{color:var(--b)}.pane[data-id=C] .plab{color:var(--c)}
+.badge{border-radius:99px;padding:4px 11px;font:700 10.5px/1 Inter;letter-spacing:.05em;
+ text-transform:uppercase;color:#fff;background:var(--a);white-space:nowrap}
+.badge.alt{background:var(--hi)}.badge.g{background:var(--faint)}.badge.bad{background:var(--neg)}
+label{display:block;font:600 10.5px/1.4 Inter;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--faint);margin:11px 0 4px}
+label .as{float:right;font-size:9px;letter-spacing:.04em;color:var(--hi);text-transform:none;font-weight:600}
+select,input{width:100%;background:var(--surf2);border:1px solid var(--line);color:var(--ink);
+ padding:8px 10px;border-radius:var(--r2);font:500 14px/1.3 "IBM Plex Mono",monospace}
+select{font-family:Inter}
+input::placeholder{color:var(--faint);font-weight:400}
+input.assumed{border-style:dashed}
+select:focus,input:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 3px var(--a2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.unitsel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r2);
+ font:500 12px/1 Inter;color:var(--mut);padding:0 6px;height:36px}
+.pair{display:grid;grid-template-columns:1fr 104px;gap:6px}
+details{margin-top:12px;border-top:1px solid var(--line2);padding-top:6px}
+summary{cursor:pointer;font:600 12px/1 Inter;color:var(--a);list-style:none;padding:5px 0}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"\25B8";display:inline-block;margin-right:6px;transition:.15s}
+details[open] summary::before{transform:rotate(90deg)}
+.empty{margin-top:14px;padding:16px;border:1px dashed var(--line);border-radius:var(--r2);
+ text-align:center;color:var(--faint);font-size:13.5px}
+.tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.hint{font-size:12.5px;color:var(--faint);margin-top:6px}
+.stack{margin-top:14px;border-top:1px solid var(--line2);padding-top:10px;font-size:13.5px}
+.srow{display:flex;justify-content:space-between;gap:10px;padding:3px 0;color:var(--mut)}
+.srow b{color:var(--ink);font-weight:500;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.srow.tot{border-top:1px solid var(--line);margin-top:7px;padding-top:9px;color:var(--ink);font-weight:600}
+.srow.tot b{font-size:18px;color:var(--a);font-weight:700}
+.srow.sub2{font-size:12.5px;color:var(--faint);padding-left:10px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.kpi div{background:var(--surf2);border-radius:var(--r2);padding:9px 11px}
+.kpi .k{font:600 9.5px/1.3 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.kpi .v{font:700 19px/1.15 "IBM Plex Mono",monospace;margin-top:3px}
+.track{position:relative;height:38px;background:var(--surf2);border-radius:var(--r2);overflow:hidden;margin-top:6px}
+.gl{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}.gl.z{background:var(--faint)}
+.band{position:absolute;top:13px;height:12px;background:var(--line);border-radius:99px}
+.iq{position:absolute;top:13px;height:12px;opacity:.4;border-radius:99px}
+.tl{position:absolute;top:13px;height:12px;background:var(--neg);opacity:.3;border-radius:99px}
+.md{position:absolute;top:8px;width:3px;height:22px;background:var(--hi);border-radius:2px}
+.ticks{position:relative;height:15px;font:500 10px/1 "IBM Plex Mono",monospace;color:var(--faint);margin-top:3px}
+.ticks span{position:absolute;transform:translateX(-50%)}
+.verdict{margin-top:16px;padding:17px 19px;border-left:4px solid var(--a)}
+.vhd{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.verdict p{margin-top:9px;color:var(--mut);font-size:14.5px;max-width:92ch}
+.verdict p b{color:var(--ink);font-weight:600}
+.vlist{margin-top:12px;display:grid;gap:7px}
+.vrow{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--mut)}
+.vrow i{flex:none;width:16px;height:16px;border-radius:5px;margin-top:2px;font-style:normal;
+ display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff}
+.chartwrap{padding:16px 18px}
+svg.fan{width:100%;height:auto;display:block}
+.lg{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--mut)}
+.lg i{display:inline-block;width:14px;height:8px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tor{display:grid;gap:7px}
+.trow{display:grid;grid-template-columns:180px 1fr 60px;gap:10px;align-items:center;font-size:13px}
+.tbar{height:20px;background:var(--surf2);border-radius:var(--r2);position:relative;overflow:hidden}
+.tbar i{position:absolute;left:0;top:0;bottom:0;background:var(--a);opacity:.5;border-radius:var(--r2)}
+.tv{text-align:right;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12.5px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:10px;margin-top:12px}
+.mcard{padding:14px 15px;cursor:pointer;border:1.5px solid var(--line);border-radius:var(--r);
+ background:var(--surf);text-align:left;font-family:inherit;color:var(--ink)}
+.mcard:hover{border-color:var(--a)}
+.mcard[aria-pressed=true]{border-color:var(--a);background:var(--a2)}
+.mcard b{display:block;font-size:14px;font-weight:600}
+.mcard code{font:500 10.5px/1 "IBM Plex Mono",monospace;color:var(--a);display:block;margin-top:4px}
+.mcard .tech{display:block;font-size:12.5px;color:var(--mut);margin-top:7px;line-height:1.42}
+.mcard .why{display:block;font-size:12.5px;color:var(--ink);margin-top:7px;line-height:1.42;
+ border-top:1px dashed var(--line);padding-top:7px}
+.mcard .why::before{content:"Why it's here — ";font-weight:600;color:var(--a)}
+.mcard:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.mhead{font:700 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--faint);margin:20px 0 2px}
+.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:12px;margin-top:14px;
+ border-top:1px solid var(--line2);padding-top:14px}
+.gwrap{display:grid;grid-template-columns:168px minmax(0,1fr) 316px;gap:16px;align-items:start;margin-top:16px}
+.grail{position:sticky;top:62px;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+ border-radius:var(--r2);overflow:hidden}
+.grail button{background:var(--surf);border:0;text-align:left;cursor:pointer;color:var(--mut);
+ padding:9px 11px;font:600 11.5px/1.3 Inter;display:flex;justify-content:space-between;gap:6px;
+ align-items:center;transition:.12s}
+.grail button:hover{color:var(--a);background:var(--surf2)}
+.grail button[aria-pressed=true]{background:var(--a);color:#fff}
+.grail button b{font:600 10px/1 "IBM Plex Mono",monospace;opacity:.7}
+.grail button:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:6px}
+.gtile{background:var(--surf);border:1px solid var(--line);border-radius:var(--r2);padding:9px 10px;
+ cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);transition:.12s;position:relative;
+ min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.gtile:hover{border-color:var(--a);background:var(--surf2)}
+.gtile[aria-pressed=true]{border-color:var(--a);background:var(--a2);box-shadow:inset 2px 0 0 var(--a)}
+.gtile:focus-visible{outline:2px solid var(--a);outline-offset:1px}
+.gtile .tn{font:600 12px/1.25 Inter;letter-spacing:-.01em}
+.gtile .tu{font:500 9px/1.2 "IBM Plex Mono",monospace;color:var(--faint);letter-spacing:.02em}
+.gtile .td{position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--hi)}
+.gdetail{position:sticky;top:62px;background:var(--surf);border:1px solid var(--line);
+ border-radius:var(--r);box-shadow:var(--sh);padding:16px 17px;min-height:220px}
+.gdetail .dk{font:600 9.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;
+ color:var(--a)}
+.gdetail h3{font-size:17px;margin-top:8px;letter-spacing:-.02em}
+.gdetail .du{font:500 10.5px/1 "IBM Plex Mono",monospace;color:var(--faint);margin-top:4px}
+.gdetail .dsec{font:600 9.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
+ color:var(--faint);margin:15px 0 6px;padding-top:12px;border-top:1px solid var(--line2)}
+.gdetail p{font-size:13px;line-height:1.5;color:var(--mut)}
+.gdetail p.plain{color:var(--ink)}
+.gdetail .dused{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.gdetail .dused span{font:500 9.5px/1 "IBM Plex Mono",monospace;color:var(--mut);background:var(--surf2);
+ border:1px solid var(--line);border-radius:99px;padding:4px 8px}
+.gdetail .dhigh{display:inline-block;font:700 8.5px/1 Inter;letter-spacing:.09em;text-transform:uppercase;
+ color:#fff;background:var(--hi);border-radius:99px;padding:4px 7px;margin-top:10px}
+.gempty{color:var(--faint);font-size:13px;line-height:1.5}
+@media(max-width:1080px){.gwrap{grid-template-columns:1fr}
+ .grail{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}
+ .grail button{white-space:nowrap}
+ .gdetail{position:static}}
+.conv{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin-top:12px}
+.conv div{background:var(--surf2);border-radius:var(--r2);padding:9px 11px}
+.conv .k{font:600 9.5px/1.3 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.conv .v{font:700 16px/1.2 "IBM Plex Mono",monospace;margin-top:3px}
+.warn{margin-top:14px;padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);
+ border-left:4px solid var(--hi);background:var(--surf);font-size:13.5px;color:var(--mut)}
+.warn.bad{border-left-color:var(--neg)}
+.warn b{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:8px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line2)}
+thead th{font:600 10.5px/1.3 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+th.l,td.l{text-align:left}
+tbody tr:last-child td{border-bottom:0}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--line);background:var(--surf);
+ box-shadow:var(--sh);margin-top:12px}
+footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);max-width:90ch}
+@media(max-width:980px){.cols{--nc:1!important}.trow{grid-template-columns:120px 1fr 54px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+
+<header><div class="hin">
+ <span class="brand"><span class="dot"></span>Deal Lens</span>
+ <span class="tag">Same lens. Every deal.</span>
+ <span class="mut hide-sm" style="font-size:12.5px">Fill in the estimate, get the prediction</span>
+ <span class="sp"></span>
+ <button class="btn" id="theme">Dark</button><button class="btn" id="clear">Clear all</button>
+</div></header>
+
+<div class="wrap">
+<div class="hero">
+ <div class="eyebrow">All-in cost · leverage · tax · stress-tested outcome</div>
+ <h1>Fill in the estimate,<br>get the prediction.</h1>
+ <p>Compare up to three deals across any asset classes — a plot against an apartment against a warehouse.
+ Enter what you know; anything you leave blank is filled with a stated assumption and marked as one.
+ Then stress it: recession, stagflation, regime shifts, or a plain brochure CAGR.</p>
+</div>
+
+<div class="card hz" id="hz"></div>
+<div class="card prog" id="prog"></div>
+<div class="cols" id="panes" style="--nc:2"></div>
+<div class="tools" style="margin-top:12px"><button class="btn pri" id="addC">+ Add a third deal</button>
+ <button class="btn" id="dropC" hidden>Remove deal C</button></div>
+<div class="card verdict" id="verdict"></div>
+
+<div class="sec">
+ <h2>Unit converter</h2>
+ <p class="sub">Land is quoted per sq yard, apartments per sq ft, farm land per acre or gunta. Type any
+ one number and the rest follow.</p>
+ <div class="card" style="padding:16px 18px;margin-top:12px">
+  <div class="g2" style="max-width:520px">
+   <div><label>Area</label><div class="pair">
+    <input id="cvA" inputmode="decimal" placeholder="e.g. 424">
+    <select class="unitsel" id="cvU"></select></div></div>
+   <div><label>Price in that unit <span class="as">optional</span></label>
+    <input id="cvR" inputmode="decimal" placeholder="e.g. 90000"></div>
+  </div>
+  <div class="conv" id="cvOut"></div>
+ </div>
+</div>
+
+<div class="sec">
+ <h2>Projected net position</h2>
+ <p class="sub">Profit or loss <b>in ₹ crore</b> on the equity you put in, if you sold in that year, after
+ loan repayment, capital-gains tax and exit costs. Shaded band is the 10th to 90th percentile.</p>
+ <div class="card chartwrap" style="margin-top:12px"><div id="chart"></div><div class="lg" id="lg"></div></div>
+</div>
+
+<div class="sec">
+ <h2>Side by side</h2>
+ <div class="scroll"><table id="cmp"><thead><tr><th class="l">Measure</th></tr></thead><tbody></tbody></table></div>
+</div>
+
+<div class="sec">
+ <h2>What actually moves this answer</h2>
+ <p class="sub">Each input perturbed on its own, everything else held. The longest bar is the number
+ worth chasing a real quote for.</p>
+ <div class="card" style="padding:16px 18px;margin-top:12px"><div class="tor" id="tor"></div></div>
+</div>
+
+<div class="sec">
+ <h2>Models</h2>
+ <p class="sub">All of them share the same cost stack, leverage and tax logic. They differ only in what
+ the market is allowed to do to you. Each card carries a technical definition and a plain reason it is
+ offered here.</p>
+ <div class="mhead">Distribution models — how randomness is shaped</div>
+ <div class="mgrid" id="modelsA"></div>
+ <div class="mhead">Stress scenarios — a specific bad world, run deliberately</div>
+ <div class="mgrid" id="modelsB"></div>
+ <div class="card" style="padding:16px 18px;margin-top:14px">
+  <h3>Model parameters</h3>
+  <div class="params" id="params"></div>
+ </div>
+ <div class="warn" id="modelnote"></div>
+</div>
+
+<div class="sec" id="buildsec" hidden>
+ <h2>Build on it, or hold the land?</h2>
+ <p class="sub">Both branches run on the same paths, the same cost stack and the same horizon — the only
+ difference is whether construction happens. The break-even tells you what the decision actually hinges on.</p>
+ <div id="buildout"></div>
+</div>
+
+<div class="sec">
+ <h2>Published price history</h2>
+ <p class="sub">Cumulative change over each window, from 99acres locality trend pages, August 2026.
+ Converted to annualised rates. Blank means the window is not published for that asset type.</p>
+ <div class="scroll"><table id="hist"><thead></thead><tbody></tbody></table></div>
+ <div class="warn bad" id="histwarn"></div>
+</div>
+
+<div class="sec">
+ <h2>Every factor, and where it's used</h2>
+ <p class="sub">Pick a category, then a factor. Definitions open in the panel on the right rather than
+ pushing the page down. A dot marks the factors the tornado consistently shows moving the answer most.</p>
+ <div class="gwrap">
+  <nav class="grail" id="gfilter" aria-label="Factor categories"></nav>
+  <div class="ggrid" id="gloss"></div>
+  <aside class="gdetail" id="gdetail"></aside>
+ </div>
+</div>
+
+<footer>Runs entirely in your browser; nothing is transmitted. GST, stamp duty and tax percentages are
+yours to set — placeholders are common Telangana and Indian values, not advice on your transaction.
+Reference rates come from public listing aggregators and are starting points, not verified comparables.
+Growth and volatility are judgement calls and move the ranking more than the price inputs do.
+Not investment advice.</footer>
+</div>
+<script>
+/* ================= reference data ================= */
+const MKT={
+ res:{"— custom —":null,
+ "Kokapet / Neopolis":{psf:13000,y:2.7,mu:8.5,sig:8.5,sup:.85},
+ "Financial District":{psf:11000,y:3.8,mu:7.0,sig:6.5,sup:.55},
+ "Nanakramguda":{psf:10600,y:3.6,mu:6.3,sig:6.5,sup:.55},
+ "Khajaguda":{psf:9200,y:4.2,mu:7.5,sig:5.5,sup:.25},
+ "Narsingi":{psf:9000,y:3.5,mu:7.5,sig:6.5,sup:.60},
+ "Gandipet":{psf:10000,y:2.5,mu:7.0,sig:6.0,sup:.20},
+ "Tellapur":{psf:9500,y:3.5,mu:7.0,sig:7.5,sup:.70},
+ "Kondapur":{psf:8800,y:4.1,mu:5.3,sig:4.5,sup:.30},
+ "Kollur":{psf:7000,y:3.8,mu:8.0,sig:9.5,sup:.90},
+ "Bachupally":{psf:6500,y:4.0,mu:6.0,sig:5.5,sup:.50},
+ "Mokila":{psf:5800,y:3.0,mu:8.5,sig:10.0,sup:.75},
+ "Sainikpuri":{psf:6000,y:3.2,mu:5.0,sig:5.5,sup:.35},
+ "Adibatla":{psf:5200,y:3.6,mu:7.5,sig:9.0,sup:.70},
+ "Shamshabad belt":{psf:5500,y:2.8,mu:8.0,sig:10.5,sup:.80}},
+ land:{"— custom —":null,
+ "Kokapet / Neopolis":{psf:20000,y:0,mu:9.0,sig:10.0,sup:.55},
+ "Narsingi":{psf:11000,y:0,mu:8.0,sig:8.0,sup:.45},
+ "Gandipet":{psf:13000,y:0,mu:7.5,sig:7.5,sup:.30},
+ "Tellapur":{psf:9000,y:0,mu:7.5,sig:8.5,sup:.55},
+ "Kollur":{psf:6500,y:0,mu:8.5,sig:10.5,sup:.75},
+ "Mokila":{psf:4200,y:0,mu:9.0,sig:11.5,sup:.70},
+ "Sainikpuri":{psf:9300,y:0,mu:5.5,sig:6.5,sup:.35},
+ "Shamshabad belt":{psf:2800,y:0,mu:8.5,sig:12.0,sup:.70},
+ "Adibatla":{psf:2600,y:0,mu:8.0,sig:11.0,sup:.65}},
+ ind:{"— custom —":null,
+ "Medchal warehouse belt":{psf:2800,y:8.8,mu:5.5,sig:7.5,sup:.50},
+ "Batasingaram logistics":{psf:2600,y:9.0,mu:6.5,sig:8.0,sup:.65},
+ "Patancheru / Isnapur":{psf:3200,y:8.2,mu:6.0,sig:7.0,sup:.45},
+ "Jeedimetla industrial":{psf:4200,y:8.5,mu:5.0,sig:6.5,sup:.35},
+ "Shamshabad cargo belt":{psf:3400,y:8.0,mu:7.5,sig:9.0,sup:.70},
+ "Adibatla aero / SEZ":{psf:3000,y:7.8,mu:7.5,sig:8.5,sup:.60}}};
+/* ---- published locality price history (99acres locality trend pages, Aug-2026 snapshot).
+   Cumulative % change over each window: [1yr, 3yr, 5yr, 10yr]. null = not published.
+   These are ASKING-price indices from listings, not registered transactions. ---- */
+const HIST={
+ flat:{
+  "Kokapet / Neopolis":[4.7,30.1,77.2,200.0],
+  "Tellapur":[8.0,47.3,70.5,121.9],
+  "Financial District":[2.7,20.0,39.9,98.3],
+  "Narsingi":[9.6,42.1,58.5,281.5],
+  "Kondapur":[3.0,8.3,48.6,173.7],
+  "Sainikpuri":[4.3,15.4,39.5,110.5]},
+ land:{
+  "Kokapet / Neopolis":[24.2,55.6,null,2252.9],
+  "Tellapur":[23.9,null,289.3,990.0],
+  "Narsingi":[null,36.0,61.0,409.3],
+  "Kondapur":[43.4,40.6,73.3,422.4],
+  "Sainikpuri":[8.8,-2.6,49.0,351.5]}};
+/* 99acres publishes registered-transaction averages alongside listing averages.
+   The gap is large and one-directional. */
+const TXNGAP={"Narsingi":{listed:10300,txn:7942},"Kondapur":{listed:10400,txn:8671}};
+const CLS={"":{lab:"Choose asset class"},
+ ready:{lab:"Ready / resale flat",mk:'res',gst:0,corpus:0,maint:3},
+ uc:{lab:"Under construction",mk:'res',gst:5,corpus:170,maint:4},
+ land:{lab:"Open land / plot",mk:'land',gst:0,corpus:0,maint:0},
+ ind:{lab:"Industrial / warehouse",mk:'ind',gst:12,corpus:0,maint:1}};
+const U={sqft:{f:1,lab:'sq ft',sh:'sqft'},sqyd:{f:9,lab:'sq yard (gaz)',sh:'sq yd'},
+ sqm:{f:10.76391,lab:'sq metre',sh:'sq m'},ankanam:{f:72,lab:'ankanam',sh:'ank'},
+ cent:{f:435.6,lab:'cent',sh:'cent'},gunta:{f:1089,lab:'gunta',sh:'gunta'},
+ acre:{f:43560,lab:'acre',sh:'acre'}};
+
+/* ================= models ================= */
+const MODELS={
+ tcop:{grp:'A',lab:"t-copula + cycle",tag:"nu=4, AR(1), tail dependence",
+  tech:"Four risk factors — rent, resale, cost, timing — drawn each year from a Student-t copula over an AR(1) market cycle. Marginals are standard normal, identical to the other engines; only the dependence differs. Lower-tail dependence is non-zero, so joint extremes cluster.",
+  why:"Property downturns are one event, not four coincidences. Rent softens, resale softens and completion slips together. This is the default because it is the only engine that lets all four go wrong at once as often as they actually do."},
+ gauss:{grp:'A',lab:"Gaussian copula",tag:"rho only, zero tail dependence",
+  tech:"Same correlation matrix, Gaussian dependence. Correlation is reproduced exactly, but asymptotic tail dependence is zero — far enough into the tail, factors decouple.",
+  why:"The standard finance default. Run it against the t-copula to see how much of your downside comes purely from assuming extremes stop clustering."},
+ indep:{grp:'A',lab:"Independent factors",tag:"rho = 0",
+  tech:"Every factor drawn independently. Correlation zero by construction; the four cycles are unrelated.",
+  why:"The naive baseline, included so you can measure the error. It understates the downside on purpose — the gap between this and the t-copula is the cost of a comfortable assumption."},
+ regime:{grp:'A',lab:"Regime switching",tag:"2-state Markov chain",
+  tech:"A hidden Markov chain alternates expansion and contraction. Expansion drift runs above trend with low volatility; contraction runs well below with high volatility. Persistence is set by the transition probabilities, so downturns last several years rather than one.",
+  why:"Real-estate cycles are sticky — a bad year is usually followed by another bad year, not a bounce. This is the most honest model of a market that grinds sideways for four years, which is what actually hurts a leveraged buyer."},
+ det:{grp:'A',lab:"Deterministic CAGR",tag:"single path, no randomness",
+  tech:"One growth rate applied every year. No volatility, no cycle, no distribution — a single deterministic cash-flow line.",
+  why:"The arithmetic a brochure or broker shows you. Kept as the baseline the others should be measured against, so you can see exactly how much optimism a point estimate hides."},
+ trend:{grp:'A',lab:"Trend with mean reversion",tag:"drift decays to the long-run anchor",
+  tech:"Drift starts at the locality's recent published trend (1 and 3-year windows) and decays geometrically toward a forward-looking long-run anchor at the reversion rate you set. Shocks are still t-copula. A market running at 12% converges on the anchor rather than compounding at 12% forever.",
+  why:"The correct way to use price history. Every published window starts near a cyclical floor, so extrapolating it turns a plot into a hundred crore. This keeps the recent signal without believing it lasts twenty-five years."},
+ recession:{grp:'B',lab:"Recession stress",tag:"forced downturn, years 2-5",
+  tech:"t-copula paths with a deterministic overlay: capital growth cut by 6pp and rents by 20% across years 2 to 5, occupancy shocks doubled, exit liquidity discount widened, followed by partial recovery.",
+  why:"Answers the specific question 'what if the market turns right after I sign'. This is the timing that ruins deals — you have paid the stamp duty and taken the loan, and no equity has built yet."},
+ stagflation:{grp:'B',lab:"Stagflation",tag:"high inflation, real returns negative",
+  tech:"Inflation raised to 9%, debt cost raised by 3pp, nominal capital growth held near trend so real growth turns negative, and rent escalation lagging inflation by 3pp.",
+  why:"Property is sold as an inflation hedge. This tests that claim — nominal numbers still look fine while your real wealth and your loan both move against you."},
+ ratespike:{grp:'B',lab:"Rate spike",tag:"debt cost +4pp, cap rates expand",
+  tech:"Interest cost raised by 4pp for the whole hold, exit yield expanded so the sale price falls for the same income, and the liquidity discount widened.",
+  why:"The one that decides leveraged deals. If you are borrowing, this is the scenario to look at before the optimistic ones — it hits your EMI and your exit price simultaneously."},
+ boom:{grp:'B',lab:"Sustained boom",tag:"drift +3pp for five years",
+  tech:"t-copula paths with capital growth raised 3pp and rents 12% across years 1 to 5, then reverting to trend.",
+  why:"The upside case, included so the comparison is not one-sided. If a deal only wins here, you are underwriting a boom, not a property."}};
+let MC={engine:'tcop',nu:4,phi:.72,rho:.70,paths:3000,horizon:10,patience:3,
+ exit:'patient',infl:5.5,fd:7.2,anchor:7.5,revert:.75};
+const HORIZONS=[1,3,5,10,25];
+const STRESS={recession:1,stagflation:1,ratespike:1,boom:1};
+
+/* ================= glossary ================= */
+const GGROUPS=[
+ ['deal','Deal inputs'],['cost','Cost & tax'],['growth','Growth & risk'],
+ ['debt','Leverage'],['build','Building on a plot'],['model','Model settings'],
+ ['out','Reading the results']];
+/* [name, unit, group, high-impact, used-in, technical, plain] */
+const GLOSS=[
+ ["Area and unit","sqft / sq yd / acre","deal",0,["Cost stack","Every ₹/sqft figure"],
+  "Plot or saleable area, converted internally to square feet. One sq yard is exactly 9 sqft; one acre is 43,560.",
+  "Land is quoted per sq yard here, apartments per sq ft. Enter it however your broker quoted it — the conversion is exact, so nothing is lost."],
+ ["Your price","₹ per unit or total","deal",1,["Cost stack → base","Tornado"],
+  "What you are actually paying, in whichever unit you select, or as a lump sum. Everything else in the cost stack builds on top of this.",
+  "Usually the number you know best and the one with the largest single effect. If you have a real quote, this is where it goes."],
+ ["Market value","₹ per unit","deal",1,["Entry premium","Simulation → asset value"],
+  "What the asset is worth today, as distinct from what you pay. The simulation grows this figure; your all-in cost only sets the outflow.",
+  "The gap between it and your price is day-one equity, or a premium you have to earn back. Leave it blank and it falls back to your price — the honest default when you have no independent valuation."],
+ ["Purchase date","month and year","deal",0,["Timing","Horizon start","Tax treatment"],
+  "When you buy or bought. Model time starts here, so a past date shows elapsed years and measures the horizon from purchase rather than today.",
+  "Matters most for something you already own — the return should be measured from when your money went in, not from when you opened this page."],
+ ["Possession date","month and year","deal",0,["Income start","Payment schedule","Assignment sale"],
+  "Expected handover on an under-construction purchase. Sets the possession lag, which drives when rent begins, how construction-linked tranches are spread, and how much completion slip the build carries.",
+  "A 2028 handover on a five-year horizon means you are selling before you own it. The tool models that as an assignment, where the buyer takes over your unpaid tranches."],
+ ["FSI","ratio","deal",0,["Buildable ₹/sqft","Default buildable area"],
+  "Floor space index — permissible built-up area as a multiple of plot area.",
+  "The only fair way to compare a plot against an apartment. A plot at ₹10,000/sqft with FSI 3 costs about ₹3,300 per buildable sqft, which is the number that lines up against a flat rate."],
+
+ ["GST","% of consideration","cost",0,["Cost stack → all-in"],
+  "Tax on the sale consideration. Commonly 5% on under-construction residential with no input credit, 12% on commercial where credit is generally available, nil on completed property and land.",
+  "Non-negotiable and often forgotten. You bargain on the base rate; this rides on top of whatever you agree."],
+ ["Stamp duty and registration","% of the higher value","cost",0,["Cost stack → all-in"],
+  "Charged on the greater of the sale consideration and the government guidance value. Around 6% in Telangana — 4% duty, 0.5% registration, 1.5% transfer.",
+  "The reason a family discount may save you less than you think. If your price falls below guidance value, duty is still charged on guidance."],
+ ["Guidance value","₹ per unit","cost",0,["Stamp duty floor"],
+  "The government's notified minimum value for the locality, used as the floor for stamp duty.",
+  "Set it if you know it. Where your price sits below guidance, this is what you actually pay duty on, and the tool shows you the difference."],
+ ["Capital gains tax","% of gain","cost",0,["Exit proceeds"],
+  "Applied at exit to sale proceeds less all-in cost. India's long-term rate on property is 12.5% without indexation, or 20% with indexation for qualifying older acquisitions. Holds under 24 months switch automatically to the short-term slab rate.",
+  "Easy to leave out, and it costs real points on a long hold. It is also most of why the one-year horizon looks so bad."],
+ ["Rental income tax","% of net rent","cost",0,["Income leg"],
+  "Applied to net rental income each year, after the standard deduction and any interest set-off you choose to model, before the figure reaches the cash flow.",
+  "Your rental yield is pre-tax. At a 30% slab a 4% gross yield is nearer 2.5% in hand, which changes how a low-yield flat compares to a high-yield warehouse."],
+ ["Maintenance","₹ per sqft per month","cost",0,["Income leg","Tornado"],
+  "Recurring outflow, indexed to inflation, deducted whether or not the asset is let.",
+  "Pure cost on a home you occupy. A large flat in a tower with a big clubhouse can carry lakhs a year forever, which quietly erodes the return nobody models."],
+ ["Premiums and parking","₹ per sqft / lump","cost",0,["Cost stack → consideration"],
+  "Amenities, floor rise, facing or view charges, car parking and legal fees, added to the base before tax.",
+  "On a builder price sheet these total more than most people's entire negotiation. They belong in the comparison, not in the footnotes."],
+
+ ["Growth mean, μ","% a year","growth",1,["Simulation → capital leg","Trend engine","Tornado"],
+  "Expected annual capital appreciation before volatility — the drift of the price process, compounded on market value each year. Defaults to a trend-derived value where price history exists.",
+  "The single number that decides most of the answer. Verify it against registered transactions in that pocket, not asking prices."],
+ ["Volatility, σ","% a year","growth",0,["Outcome band width","P5 and CVaR"],
+  "Standard deviation of annual capital return. Sets the width of the outcome band, not its centre. Derived from how much the published history windows disagree.",
+  "How wrong the growth number can be. A thin new single-developer micro-market deserves a high figure; a mature suburb with hundreds of resales deserves a low one."],
+ ["Supply overhang","0 to 1","growth",0,["Soft-year drag","Exit liquidity cut"],
+  "Weight on extra drag applied whenever the cycle runs below trend, so oversupplied markets fall harder rather than merely being more volatile.",
+  "Unsold inventory relative to absorption. Kokapet with thousands of launched units has a different downside to Khajaguda hemmed in by a rock park, even at the same average growth."],
+ ["Gross yield","% a year","growth",1,["Income leg","Tornado"],
+  "Annual rent before costs, divided by market value, then reduced by an operating factor, vacancy and self-occupied share.",
+  "The income leg. Land is zero — it earns nothing until you build. This is what keeps you solvent while you wait for appreciation."],
+ ["Rent escalation","% a year","growth",0,["Income leg"],
+  "Compound annual growth applied to rent, independent of capital growth. Defaults to inflation.",
+  "A nine-year lease with a fixed 5% step is a different asset to one reset to market every eleven months. Warehouses are usually the former, flats the latter."],
+ ["Published price history","% per window","growth",0,["Default μ and σ","History table"],
+  "Cumulative appreciation over 1, 3, 5 and 10-year windows from locality trend pages, annualised and blended. Sets the locality's premium over the city median.",
+  "History fixes the ranking and the volatility, not the level — the windows start at a cyclical floor, so extrapolating them turns a plot into a hundred crore. The level comes from the long-run anchor instead."],
+ ["Self-occupied share","0 to 1","growth",0,["Income leg","Carry spread"],
+  "Fraction of the asset you live in rather than let, which removes that share of rental income while keeping every cost.",
+  "A home you occupy earns nothing and still pays maintenance. Set this to 1 for a residence, or the model will credit you rent you never collect."],
+
+ ["Loan to value","% of all-in cost","debt",1,["Equity at entry","Every IRR","Carry spread"],
+  "Share of the purchase funded by debt. Reduces equity at entry, adds an amortising repayment through the hold, and repays outstanding principal at exit. IRR is measured on equity cash flows only.",
+  "Leverage magnifies both directions. A deal returning 9% unlevered can return 14% at 60% LTV, or turn deeply negative, because the loan does not shrink when the market does."],
+ ["Interest rate","% a year","debt",0,["Repayment schedule","Carry spread"],
+  "Cost of the loan, applied to a level-payment amortising schedule over the stated tenure.",
+  "Compare it to the deal's unlevered return. Borrowing at 8.9% for an asset compounding at 6% is working against you no matter how the brochure frames it."],
+ ["Tenure","years","debt",0,["Repayment schedule","Outstanding at exit"],
+  "Loan term. Sets how much of each payment is principal, and therefore how much debt is left to repay when you sell.",
+  "A longer tenure means a smaller annual payment but more principal outstanding at exit. It changes the shape of the cash flow, not the underlying economics."],
+ ["Carry spread","% a year","debt",1,["Pane warning","Comparison table"],
+  "Asset growth plus net rental yield, minus the interest rate. Multiplied by roughly one over one-minus-LTV to show the effect on equity.",
+  "The most decision-relevant number for a levered deal. Negative carry at high leverage destroys equity fast — borrowing at 8.9% against a 6% asset with no rent loses about 29% a year on equity at 90% LTV."],
+
+ ["Buildable area","sqft","build",0,["Construction cost","Rent","Exit value"],
+  "Constructable floor area, defaulting to plot area times FSI times 78% efficiency.",
+  "The efficiency haircut is setbacks, staircases and common area. Override it with your architect's number if you have one."],
+ ["Build rate","₹ per sqft","build",1,["Construction cost","Total project cost"],
+  "Construction cost per built square foot, before a cost-overrun draw taken from the cost cycle.",
+  "Along with rent, this decides whether building is worth doing. Get a real contractor quote before trusting the default."],
+ ["Build start and duration","years / months","build",0,["Capex timing","Income start"],
+  "When construction begins after purchase and how long it runs, plus a completion slip drawn from the timing cycle.",
+  "A long build is capital sitting idle. It also pushes rent past your horizon, which is how a sound project turns into a poor return."],
+ ["Blended rent","₹ per sqft per month","build",1,["Income leg","Break-even","Exit value"],
+  "Average achieved rent across all floors once complete, before the operating factor and vacancy.",
+  "Blended means the ground floor and the top floor averaged together. It is the number the whole build-or-hold decision turns on."],
+ ["Exit cap rate","%","build",0,["Built-asset exit value"],
+  "Yield a buyer would demand for the finished income-producing asset. Net income divided by this gives the income valuation.",
+  "Only binds when rent is high enough that income valuation beats land plus depreciated structure. At a low yield the bricks set the floor and the cap rate is irrelevant."],
+ ["Break-even rent","₹ per sqft per month","build",0,["Build-vs-hold card"],
+  "Solved, not entered: the rent at which building returns exactly what holding the bare plot returns.",
+  "The cleanest way to state the decision. Above it, construction adds value; below it, you are spending crores to earn less than doing nothing."],
+
+ ["Investment horizon","1 / 3 / 5 / 10 / 25 years","model",1,["Everything"],
+  "The holding period every figure is measured over. Drives the exit year, the chart axis, and whether gains are short or long-term.",
+  "Short horizons are punished by entry costs, exactly as in reality. The same flat can return below zero over one year and 7% over ten."],
+ ["Exit rule and patience","patient or fixed","model",0,["Exit year","Tail outcomes"],
+  "Fixed sells exactly at the horizon. Patient waits out a soft market for up to a set number of extra years, capped at half the horizon.",
+  "This is where holding power gets valued. Avoiding a forced sale into a trough is worth more than most modelling refinements."],
+ ["Long-run anchor","% a year","model",0,["Every trend-derived μ"],
+  "The forward-looking growth level that locality premiums are applied to. Defaults to rupee inflation plus about two points of real appreciation.",
+  "Set the level you actually believe in for property over decades. History gives the ranking; this gives the altitude."],
+ ["Reversion rate","0 to 1","model",0,["Trend model only"],
+  "How fast drift decays from the recent trend toward the long-run anchor.",
+  "Controls whether you think a hot market stays hot. Lower means it cools quickly; higher means today's trend persists."],
+ ["Tail heaviness, ν","degrees of freedom","model",0,["t-copula shocks"],
+  "Degrees of freedom of the t-copula. Lower means stronger clustering of joint extremes; as it rises the copula converges on Gaussian.",
+  "How often everything goes wrong together. Four is a common choice; no need to tune it finely, because the big error is assuming independence at all."],
+ ["Cycle persistence, φ","0 to 1","model",0,["Market cycle"],
+  "Autoregressive coefficient of the market cycle. Higher means shocks decay slowly and conditions persist across years.",
+  "Property does not reset annually. A high value is what makes a downturn last long enough to catch you at exit, which is the whole risk."],
+ ["Factor correlation, ρ","0 to 1","model",0,["All four risk factors"],
+  "Strength of dependence between rent, resale, cost and timing before the copula shape is applied.",
+  "Turn it to zero and you get the naive model. The difference between zero and 0.7 is larger than any other modelling choice on this page."],
+ ["Simulated paths","count","model",0,["Every distribution figure"],
+  "How many independent futures are generated. More paths mean smoother percentiles and a slower page.",
+  "Three thousand is enough for stable medians and tails. Raise it only if the numbers visibly jitter between refreshes."],
+
+ ["Median IRR","% a year","out",0,["Verdict","Comparison table"],
+  "The 50th percentile internal rate of return across simulated paths, on equity cash flows.",
+  "The typical outcome, not the promised one. Half the paths do better and half do worse, which is the honest way to quote a return."],
+ ["P5 and worst-5% average","% a year","out",0,["Verdict","Distribution strip"],
+  "P5 is the fifth-percentile IRR. The worst-5% average is the mean of everything at or below it.",
+  "P5 tells you where the bad case starts. The average tells you how bad it gets once you are there, which is the number that matters if you are borrowing."],
+ ["Misses the deposit hurdle","% of paths","out",1,["Verdict","Comparison table"],
+  "Share of simulated paths returning less than the fixed-deposit rate you set.",
+  "The comparison that matters most and gets asked least. If a deal misses a term deposit half the time, you are taking illiquidity and stamp duty for nothing."],
+ ["Loses to inflation","% of paths","out",0,["Comparison table"],
+  "Share of paths returning less than the inflation rate — where nominal gains hide a real loss.",
+  "A 5% return in a 5.5% inflation world has made you poorer. This is the row that says so."],
+ ["Net position","₹ crore","out",0,["Projection chart"],
+  "Profit or loss on the equity you put in if you sold in that year, after loan repayment, capital-gains tax and exit costs.",
+  "The chart line. Where it crosses zero is when the deal has finally paid back everything it cost you to get into."],
+ ["Median hold to exit","years","out",0,["Comparison table","Tax treatment"],
+  "The typical year the simulation actually sells, which can exceed your horizon under a patient exit rule.",
+  "Tells you whether patience is being used. If it consistently runs past the horizon, the model is waiting out soft markets on your behalf."]];
+
+/* ================= trend engine ================= */
+const WIN=[1,3,5,10], WGT=[.12,.34,.36,.18];
+const cagrOf=(pct,yrs)=>pct==null?null:((Math.pow(1+pct/100,1/yrs)-1)*100);
+const histKey=cls=>cls==='land'?'land':cls==='ind'?null:'flat';
+function histCagrs(cls,area){
+ const k=histKey(cls); if(!k)return null;
+ const raw=HIST[k]&&HIST[k][area]; if(!raw)return null;
+ return raw.map((p,i)=>cagrOf(p,WIN[i]));
+}
+function wblend(c){let n=0,d=0;
+ c.forEach((v,i)=>{if(v==null)return;n+=WGT[i]*v;d+=WGT[i]});
+ return d?n/d:null}
+function pstdev(a){const o=a.filter(v=>v!=null);if(o.length<2)return 5;
+ const m=o.reduce((x,y)=>x+y,0)/o.length;
+ return Math.sqrt(o.reduce((s,v)=>s+(v-m)*(v-m),0)/o.length)}
+function cityBlend(k){
+ const b=Object.keys(HIST[k]).map(a=>wblend(histCagrs(k==='land'?'land':'ready',a)))
+  .filter(v=>v!=null).sort((x,y)=>x-y);
+ if(!b.length)return MC.anchor;
+ const n=b.length;
+ return n%2?b[(n-1)/2]:(b[n/2-1]+b[n/2])/2}   /* true median, not the upper middle */
+/* History sets the RANKING and the VOLATILITY. The LEVEL is anchored forward-looking,
+   because every published window starts near a cyclical floor and extrapolates absurdly. */
+function trend(cls,area){
+ const c=histCagrs(cls,area); if(!c)return null;
+ const k=histKey(cls), raw=wblend(c); if(raw==null)return null;
+ const city=cityBlend(k), d=pstdev(c);
+ const prem=Math.max(-4,Math.min(4,(raw-city)*.55));
+ return{cagrs:c,raw,city,prem,
+  mu:+(MC.anchor+prem).toFixed(1),
+  sig:+Math.max(4.5,Math.min(14,d*.85+3.5)).toFixed(1),
+  recent:wblend([c[0],c[1],null,null])??raw};
+}
+/* ================= math ================= */
+function rn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
+ return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function ndtri(p){if(p<=0)return -8;if(p>=1)return 8;
+ const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,
+  1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00],
+ b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,
+  6.680131188771972e+01,-1.328068155288572e+01],
+ c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,
+  -2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00],
+ d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+ const pl=0.02425;let q,r;
+ if(p<pl){q=Math.sqrt(-2*Math.log(p));
+  return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+ if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));
+  return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+ q=p-.5;r=q*q;
+ return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)}
+function lgam(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,
+ -1.231739572450155,.1208650973866179e-2,-.5395239384953e-5];
+ let y=x,t=x+5.5;t-=(x+.5)*Math.log(t);let s=1.000000000190015;
+ for(let j=0;j<6;j++)s+=c[j]/++y;return -t+Math.log(2.5066282746310005*s/x)}
+function betacf(a,b,x){const M=200,EPS=3e-14,FP=1e-30;
+ let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;
+ if(Math.abs(d)<FP)d=FP;d=1/d;let h=d;
+ for(let m=1;m<=M;m++){const m2=2*m;
+  let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+  d=1+aa*d;if(Math.abs(d)<FP)d=FP;c=1+aa/c;if(Math.abs(c)<FP)c=FP;d=1/d;h*=d*c;
+  aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+  d=1+aa*d;if(Math.abs(d)<FP)d=FP;c=1+aa/c;if(Math.abs(c)<FP)c=FP;d=1/d;
+  const del=d*c;h*=del;if(Math.abs(del-1)<EPS)break}
+ return h}
+function ibeta(a,b,x){if(x<=0)return 0;if(x>=1)return 1;
+ const bt=Math.exp(lgam(a+b)-lgam(a)-lgam(b)+a*Math.log(x)+b*Math.log(1-x));
+ return x<(a+1)/(a+b+2)?bt*betacf(a,b,x)/a:1-bt*betacf(b,a,1-x)/b}
+function tcdf(x,nu){const p=.5*ibeta(nu/2,.5,nu/(nu+x*x));return x>0?1-p:p}
+function chol(A){const n=4,L=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+ for(let i=0;i<n;i++)for(let j=0;j<=i;j++){let s=0;for(let k=0;k<j;k++)s+=L[i][k]*L[j][k];
+  L[i][j]= i===j ? Math.sqrt(Math.max(1e-9,A[i][i]-s)) : (A[i][j]-s)/L[j][j];}
+ return L}
+
+/* ================= shocks ================= */
+const NY=31;let MP=[],MR=[],MT=[],MK=[],RG=[],SHOCK_KEY='';
+const HZ=()=>Math.max(1,Math.min(NY-1,Math.round(MC.horizon)));
+/* patience is capped at half the horizon: picking "1 year" must not quietly become four */
+const EXITMAX=()=>{const h=HZ();
+ const p=MC.exit==='patient'?Math.min(Math.max(0,Math.round(MC.patience)),Math.floor(h/2)):0;
+ return Math.min(NY-1,h+p)};
+/* "2028-11" -> 2028.833 */
+function ymNum(v){if(!v||!/^\d{4}-\d{1,2}$/.test(String(v).trim()))return null;
+ const [y,m]=String(v).trim().split('-').map(Number);
+ if(!(y>=1900&&y<=2200&&m>=1&&m<=12))return null;return y+(m-1)/12}
+function nowNum(){const d=new Date();return d.getFullYear()+d.getMonth()/12}
+function ymLabel(n){if(n==null)return '';const y=Math.floor(n+1e-9),m=Math.round((n-y)*12);
+ return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Math.min(11,Math.max(0,m))]+' '+y}
+const baseEngine=()=>STRESS[MC.engine]?'tcop':MC.engine;
+function buildShocks(){
+ const be=baseEngine();
+ const key=[be,MC.nu,MC.phi,MC.rho,MC.paths].join('|');
+ if(key===SHOCK_KEY)return; SHOCK_KEY=key;
+ const k=MC.rho/.70, o=x=>Math.max(0,Math.min(.97,x*k));
+ const C=[[1,o(.70),o(.30),o(.45)],[o(.70),1,o(.35),o(.55)],
+          [o(.30),o(.35),1,o(.50)],[o(.45),o(.55),o(.50),1]];
+ const L=be==='indep'?[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]:chol(C);
+ MP=[];MR=[];MT=[];MK=[];RG=[];
+ const P=be==='det'?1:Math.max(50,Math.round(MC.paths)), s=Math.sqrt(1-MC.phi*MC.phi);
+ const nu=Math.max(2.5,MC.nu), nuI=Math.max(3,Math.round(nu));
+ for(let i=0;i<P;i++){
+  const mp=[0],mr=[0],mt=[0],mkc=[0],rg=[0];
+  let st=Math.random()<.75?1:0;              /* 1 = expansion, 0 = contraction */
+  for(let t=1;t<NY;t++){
+   if(be==='det'){mp.push(0);mr.push(0);mt.push(0);mkc.push(0);rg.push(1);continue}
+   const g=[rn(),rn(),rn(),rn()];
+   let v=L.map(row=>row[0]*g[0]+row[1]*g[1]+row[2]*g[2]+row[3]*g[3]);
+   if(be==='tcop'){let c2=0;for(let q=0;q<nuI;q++){const x=rn();c2+=x*x}
+    const sc=Math.sqrt(c2/nuI);
+    v=v.map(z=>ndtri(Math.min(1-1e-9,Math.max(1e-9,tcdf(z/sc,nuI)))));}
+   if(be==='regime'){
+    st = st===1 ? (Math.random()<.86?1:0) : (Math.random()<.62?0:1);
+    rg.push(st);
+    const shift=st===1?.55:-1.65, vol=st===1?.75:1.5;
+    mp.push(MC.phi*mp[t-1]+s*v[1]*vol+shift*(1-MC.phi));
+    mr.push(MC.phi*mr[t-1]+s*v[0]*vol+shift*.6*(1-MC.phi));
+    mt.push(MC.phi*mt[t-1]+s*v[3]*vol+shift*.5*(1-MC.phi));
+    mkc.push(MC.phi*mkc[t-1]+s*v[2]*vol);
+    continue;}
+   rg.push(1);
+   mr.push(MC.phi*mr[t-1]+s*v[0]);
+   mp.push(MC.phi*mp[t-1]+s*v[1]);
+   mkc.push(MC.phi*mkc[t-1]+s*v[2]);
+   mt.push(MC.phi*mt[t-1]+s*v[3]);}
+  MP.push(mp);MR.push(mr);MT.push(mt);MK.push(mkc);RG.push(rg);}
+}
+/* deterministic stress overlay, by year */
+function overlay(t){
+ const e=MC.engine;
+ if(e==='recession'){const a=Math.max(1,Math.round(HZ()*.2)),b=a+Math.max(1,Math.round(HZ()*.3));
+  return (t>=a&&t<=b)?{g:-.060,rent:-.20,occ:2.0,liq:1.8,rate:0,cap:.010}
+                     :{g:(t>b?.010:0),rent:0,occ:1,liq:1,rate:0,cap:0};}
+ if(e==='stagflation')return {g:-.015,rent:-.03,occ:1.2,liq:1.3,rate:.03,cap:.008};
+ if(e==='ratespike')  return {g:-.010,rent:0,occ:1.1,liq:1.5,rate:.04,cap:.015};
+ if(e==='boom'){const b=Math.max(2,Math.round(HZ()*.5));
+  return (t<=b)?{g:.030,rent:.12,occ:.6,liq:.8,rate:0,cap:-.005}
+               :{g:0,rent:0,occ:1,liq:1,rate:0,cap:0};}
+ return {g:0,rent:0,occ:1,liq:1,rate:0,cap:0};
+}
+const inflOf=()=>MC.engine==='stagflation'?9.0:MC.infl;
+/* trend model: drift starts at the recent trend and decays toward the long-run anchor */
+function driftAt(s,t,mu){
+ if(MC.engine!=='trend')return mu;
+ const tr=trend(s.cls,s.area); if(!tr)return mu;
+ const dec=Math.pow(MC.revert,t);
+ return (MC.anchor+(tr.recent-MC.anchor)*dec)/100;
+}
+
+/* ================= state ================= */
+const BLANK=()=>({cls:'',area:'— custom —',buy:'',poss:'',sqft:'',unit:'sqft',rate:'',runit:'sqft',
+ worth:'',wunit:'sqft',fsi:'',y:'',esc:'',mu:'',sig:'',sup:'',gst:'',stamp:'',
+ amen:'',floor:'',face:'',park:'',guide:'',maint:'',own:'',itc:'',
+ ltv:'',irate:'',tenure:'',tcg:'',trent:'',
+ build:'no',bcost:'',bsqft:'',bstart:'',bmonths:'',brent:'',bcap:'',bltv:''});
+const D={A:BLANK(),B:BLANK(),C:null};
+const IDS=()=>['A','B','C'].filter(k=>D[k]);
+const COL={A:'var(--a)',B:'var(--b)',C:'var(--c)'};
+const num=x=>{const v=parseFloat(x);return isFinite(v)?v:null};
+function mkOf(s){const c=CLS[s.cls];if(!c||!c.mk)return null;return MKT[c.mk][s.area]||null}
+const AREA=s=>Math.max(0,(num(s.sqft)||0)*(U[s.unit]?.f||1));
+function perSqft(s,key,uk){const v=num(s[key]);if(v===null)return null;
+ if(s[uk]==='total'){const a=AREA(s);return a>0?v/a:null}
+ return v/(U[s[uk]]?.f||1)}
+const ready=s=>!!s&&!!s.cls&&AREA(s)>0&&perSqft(s,'rate','runit')>0;
+function F(s,k){
+ const mk=mkOf(s), c=CLS[s.cls]||{};
+ if(k==='sqft'){const a=AREA(s);return{v:a,user:a>0,ph:null}}
+ if(k==='rate'||k==='worth'){
+  const uk=k==='rate'?'runit':'wunit', pv=perSqft(s,k,uk);
+  let dd=mk?mk.psf:null;
+  if(k==='worth'&&pv===null&&!mk){const rr=perSqft(s,'rate','runit');if(rr!==null)dd=rr}
+  return{v:pv!==null?pv:(dd??0),user:pv!==null,ph:dd};}
+ if(k==='buy'||k==='poss')return{v:ymNum(s[k]),user:ymNum(s[k])!=null,ph:null};
+ const u=num(s[k]);let d=0;
+ switch(k){
+  case'y': d=mk?mk.y:(s.cls==='land'?0:s.cls==='ind'?8.5:3.5);break;
+  case'esc': d=MC.infl;break;
+  case'mu': {const tr=trend(s.cls,s.area); d=tr?tr.mu:(mk?mk.mu:MC.anchor);break}
+  case'sig': {const tr=trend(s.cls,s.area); d=tr?tr.sig:(mk?mk.sig:7);break}
+  case'sup': d=mk?mk.sup:.5;break;
+  case'gst': d=c.gst??0;break;
+  case'stamp': d=6;break;
+  case'maint': d=c.maint??0;break;
+  case'itc': d=s.cls==='ind'?100:0;break;
+  case'irate': d=8.9;break;
+  case'tenure': d=15;break;
+  case'tcg': d=12.5;break;
+  case'trent': d=30;break;
+  case'fsi': d=0;break;
+  case'bcost': d=2100;break;
+  case'bsqft': {const fs=num(s.fsi)||1.5;d=Math.round(AREA(s)*fs*0.78);break}
+  case'bstart': d=0.5;break;
+  case'bmonths': d=24;break;
+  case'brent': {const fm=MKT.res[s.area];d=fm?+(fm.psf*fm.y/100/12).toFixed(1):16;break}
+  case'bcap': d=8.0;break;
+  case'bltv': d=F(s,'ltv').v;break;
+  default: d=0;}
+ return{v:u!==null?u:d,user:u!==null,ph:d};
+}
+/* construction plan for an open plot. force: true/false overrides the user's toggle. */
+function buildPlan(s,force){
+ const on = force===undefined ? (s.build==='yes') : !!force;
+ const bs=Math.max(0,F(s,'bsqft').v), bc=Math.max(0,F(s,'bcost').v);
+ return{on:on&&s.cls==='land'&&bs>0&&bc>0,
+  sqft:bs, psf:bc, total:bs*bc,
+  start:Math.max(0,F(s,'bstart').v),
+  dur:Math.max(.25,F(s,'bmonths').v/12),
+  rent:Math.max(0,F(s,'brent').v),
+  cap:Math.max(2,F(s,'bcap').v)/100,
+  ltv:Math.min(90,Math.max(0,F(s,'bltv').v))/100};
+}
+/* timing, in model years measured from the purchase date */
+function timing(s){
+ const now=nowNum();
+ const buy=ymNum(s.buy), poss=ymNum(s.poss);
+ const buyN=buy!=null?buy:now;
+ const elapsed=Math.max(0,now-buyN);
+ let lag;                                   /* years from purchase to possession */
+ if(poss!=null)lag=Math.max(0,poss-buyN);
+ else lag=s.cls==='uc'?2.5:0;
+ return{buyN,possN:poss!=null?poss:(s.cls==='uc'?buyN+lag:null),
+  lag,elapsed,dated:buy!=null,possDated:poss!=null,
+  remaining:Math.max(0,HZ()-elapsed)};
+}
+const CONF_KEYS=['sqft','rate','worth','y','mu','sig','gst','stamp','maint','ltv','tcg','buy'];
+const conf=s=>({got:CONF_KEYS.filter(k=>F(s,k).user).length,tot:CONF_KEYS.length});
+
+/* ================= cost stack ================= */
+function cost(s){
+ const sqft=AREA(s)||1, rate=F(s,'rate').v;
+ const base=rate*sqft;
+ const prem=(F(s,'amen').v+F(s,'floor').v+F(s,'face').v)*sqft;
+ const cons=base+prem+F(s,'park').v+30000;
+ const gstR=F(s,'gst').v/100, itc=Math.min(100,Math.max(0,F(s,'itc').v))/100;
+ const gst=cons*gstR*(1-itc);
+ const stampBase=Math.max(cons,F(s,'guide').v*sqft);
+ const duty=stampBase*F(s,'stamp').v/100;
+ const corpus=(CLS[s.cls]?.corpus||0)*sqft;
+ const total=cons+gst+duty+corpus;
+ const ltv=Math.min(90,Math.max(0,F(s,'ltv').v))/100;
+ return{base,prem,cons,gst,duty,corpus,total,eff:total/sqft,
+  loan:total*ltv,equity:total*(1-ltv),stampOnGuide:stampBase>cons};
+}
+/* level-payment loan schedule -> {pay[], bal[]} by year */
+function amort(loan,ratePct,tenure,years){
+ const r=Math.max(0,ratePct)/100, n=Math.max(1,Math.round(tenure));
+ const pay=new Array(years+1).fill(0), bal=new Array(years+1).fill(0);
+ if(loan<=0)return{pay,bal,annual:0};
+ const annual = r>0 ? loan*r/(1-Math.pow(1+r,-n)) : loan/n;
+ let b=loan;
+ for(let t=1;t<=years;t++){
+  if(b<=1e-9){bal[t]=0;continue}
+  const int=b*r, prin=Math.min(b,Math.max(0,annual-int));
+  pay[t]=int+prin; b=Math.max(0,b-prin); bal[t]=b;}
+ return{pay,bal,annual};
+}
+function irr1(cf,len){let lo=-.95,hi=2.0;
+ for(let k=0;k<48;k++){const md=(lo+hi)*.5,f=1/(1+md);let n=0,d=1;
+  for(let t=0;t<len;t++){n+=cf[t]*d;d*=f}
+  if(n<0)hi=md;else lo=md}
+ return(lo+hi)*.5}
+
+/* ================= simulation ================= */
+function run(s,c,paths,force){
+ buildShocks();
+ const bp=buildPlan(s,force);
+ const P=Math.min(paths||MP.length,MP.length);
+ const sqft=AREA(s)||1;
+ const allin=c.total/1e7, equity0=c.equity/1e7, loan0=c.loan/1e7;
+ const mkt=(F(s,'worth').v||F(s,'rate').v)*sqft/1e7;
+ const mu=F(s,'mu').v/100, sig=(MC.engine==='det'?0:F(s,'sig').v/100);
+ const sup=F(s,'sup').v, y=F(s,'y').v/100;
+ const own=Math.min(1,Math.max(0,F(s,'own').v));
+ const INFL=inflOf()/100, esc=F(s,'esc').v/100;
+ const maint0=F(s,'maint').v*sqft*12/1e7;
+ const tcgL=Math.min(50,Math.max(0,F(s,'tcg').v))/100;
+ const trent=Math.min(50,Math.max(0,F(s,'trent').v))/100;
+ const tm=timing(s), H=HZ(), XM=EXITMAX();
+ const ov0=overlay(1);
+ const sch=amort(loan0,F(s,'irate').v+ov0.rate*100,F(s,'tenure').v,NY);
+ const cls=s.cls;
+ const irrs=[],holds=[],net=Array.from({length:NY},()=>[]);
+ const tmLag=timing(s).lag;
+ for(let i=0;i<P;i++){
+  const m=MP[i],mr=MR[i],mt=MT[i],mkc=MK[i]||MR[i];
+  const cf=new Array(NY).fill(0);
+  /* entry: equity only; under-construction staged across the build period */
+  const out=new Array(NY).fill(0),unpaid=new Array(NY).fill(0);
+  /* construction: cost overrun and slip drawn from the cost and timing cycles */
+  let bTot=0,bDone=Infinity,bEq=0,bLoan=0,bLoanPay=null;
+  if(bp.on){
+   const overrun=Math.exp(.18*-mkc[Math.min(NY-1,Math.max(1,Math.ceil(bp.start)+1))])*1.06;
+   bTot=bp.total*overrun/1e7;
+   const slipB=Math.max(0,-mt[Math.min(NY-1,Math.max(1,Math.ceil(bp.start)+1))])*.45;
+   bDone=bp.start+bp.dur+slipB;
+   bEq=bTot*(1-bp.ltv); bLoan=bTot*bp.ltv;
+   const n=Math.max(1,Math.ceil(bp.dur));
+   for(let k=0;k<n;k++){const t=Math.min(NY-1,Math.round(bp.start)+k);out[t]+=bEq/n}
+   bLoanPay=amort(bLoan,F(s,'irate').v+overlay(1).rate*100,F(s,'tenure').v,NY);}
+  if(cls==='uc'&&tmLag>0){
+   out[0]=equity0*.30;
+   const n=Math.max(1,Math.ceil(tmLag)),share=.70/n;
+   for(let t=1;t<=n&&t<NY;t++)out[t]=equity0*share;
+   /* what a buyer taking over the booking would still owe the developer */
+   let done=.30;
+   for(let t=0;t<NY;t++){if(t>0&&t<=n)done+=.70/n;unpaid[t]=allin*Math.max(0,1-done)}}
+  else out[0]=equity0;
+  for(let t=0;t<NY;t++)cf[t]-=out[t];
+  const Pi=[1];let p=1;
+  for(let t=1;t<=XM;t++){const o=overlay(t);
+   let g=driftAt(s,t,mu)+o.g+sig*m[t]-Math.max(-m[t],0)*sup*.022;
+   if(cls==='ind')g-=.012;
+   p*=Math.max(.35,1+g);Pi.push(p)}
+  /* income begins at possession, plus a slip drawn from the timing factor */
+  const slip=cls==='uc'?Math.max(0,-mt[Math.min(2,XM)])*(0.8+tmLag*0.22):0;
+  const start=Math.max(1,tm.lag+slip+(cls==='uc'?1:0));
+  const inc=new Array(NY).fill(0);
+  for(let t=1;t<=XM;t++){
+   const o=overlay(t);
+   let v=0;
+   if(t>=start){
+    let occ=1;
+    if(cls==='ind'){const sh=.6*mr[t]+.5*mt[t];
+     occ = sh<-.9/o.occ ? .25 : (sh<-.35/o.occ ? .70 : 1);}
+    else if(cls!=='land'){occ = mr[t]<-1.1/o.occ ? .85 : 1}
+    v=mkt*y*(cls==='ind'?.90:.80)*(1-own)*occ*(1+o.rent)*
+      Math.exp(.22*mr[t])*Math.pow(1+esc,t-1);
+    v*=(1-trent);}
+   if(bp.on&&t>=bDone){
+    const occ=mr[t]<-1.1/o.occ?.85:1;
+    const gross=bp.sqft*bp.rent*12/1e7*occ*(1+o.rent)*Math.exp(.22*mr[t])*Math.pow(1+esc,t-1);
+    v+=gross*.76*(1-trent)*(1-own);}
+   inc[t]=v-maint0*Math.pow(1+INFL,t-1)-sch.pay[t]-(bLoanPay?bLoanPay.pay[t]:0);
+   cf[t]+=inc[t];}
+  let liqB=.035; if(cls==='land')liqB=.045; if(cls==='ind')liqB=.050;
+  const proceeds=t=>{
+   const o=overlay(t);
+   const liq=liqB*(.6+sup)*o.liq;
+   const cut=1-Math.min(2.2,.5*Math.max(-m[t],0)+.25*Math.max(-mt[t],0))*liq;
+   const capHit=1/(1+o.cap*10);
+   let val=mkt*Pi[t]*cut*capHit;
+   let basis=allin-unpaid[t];
+   if(bp.on&&t>=bDone){
+    /* built asset: worth the greater of bricks-and-land and what the income capitalises to */
+    const age=t-bDone, dep=Math.max(.55,1-.012*age);
+    const noi=bp.sqft*bp.rent*12/1e7*.76*Math.pow(1+esc,t-1);
+    val=Math.max(val+bTot*dep, noi/(bp.cap+Math.max(0,-m[t])*.012))*cut*capHit;
+    basis+=bTot;}
+   const gross=val*.96-unpaid[t];
+   const gain=Math.max(0,gross-basis);
+   const rate=t<2?Math.max(tcgL,trent):tcgL;   /* under 24 months is short-term */
+   return gross-gain*rate-sch.bal[t]-(bLoanPay?bLoanPay.bal[t]:0);};
+  /* net position if sold in year t: proceeds + income received so far - equity put in so far */
+  let cum=0,spent=out[0];
+  for(let t=1;t<=XM;t++){
+   cum+=inc[t]; spent+=out[t];
+   net[t].push(proceeds(t)+cum-spent);}
+  /* exit: at the horizon, or wait out a soft market if patient */
+  let idx=Math.min(XM,H);
+  if(MC.exit==='patient'&&XM>H&&m[idx]<.10){
+   for(let t=H+1;t<=XM;t++){if(m[t]>.25){idx=t;break}else idx=t}}
+  cf[idx]+=proceeds(idx);
+  irrs.push(irr1(cf,idx+1));
+  holds.push(idx);}
+ irrs.sort((a,b)=>a-b);
+ const q=(a,pp)=>a[Math.min(a.length-1,Math.max(0,Math.floor(pp*a.length)))];
+ const fan=net.map(a=>{if(!a.length)return null;const b=a.slice().sort((x,y)=>x-y);
+  return{p10:q(b,.10),p25:q(b,.25),p50:q(b,.5),p75:q(b,.75),p90:q(b,.90)}});
+ holds.sort((a,b)=>a-b);
+ const n=irrs.length,tail=Math.max(1,Math.floor(n*.05));
+ const det=MC.engine==='det';
+ return{med:q(irrs,.5)*100,p5:q(irrs,.05)*100,p25:q(irrs,.25)*100,p75:q(irrs,.75)*100,
+  p95:q(irrs,.95)*100,
+  cvar:irrs.slice(0,tail).reduce((a,b)=>a+b,0)/tail*100,
+  pfd:irrs.filter(x=>x*100<MC.fd).length/n*100,
+  preal:irrs.filter(x=>x*100<inflOf()).length/n*100,
+  ploss:irrs.filter(x=>x<0).length/n*100,
+  fan,det,equity:c.equity,loan:c.loan,emi:sch.annual,bp,
+  hold:holds[Math.floor(holds.length/2)]||HZ(),xmax:XM,
+  shortTerm:(holds[Math.floor(holds.length/2)]||HZ())<2,tm:timing(s)};
+}
+
+/* ================= render ================= */
+const cr=x=>'₹'+(x/1e7).toFixed(2)+' cr';
+const inr=x=>Math.round(x).toLocaleString('en-IN');
+const LO=-10,HI=26,X=v=>(Math.max(LO,Math.min(HI,v))-LO)/(HI-LO)*100;
+const TICKS=[-5,0,5,10,15,20,25];
+function fld(s,id,k,lab,ph){
+ const f=F(s,k);
+ return `<div><label>${lab}<span class="as" data-as="${k}"></span></label>
+ <input data-id="${id}" data-f="${k}" value="${s[k]??''}" inputmode="decimal"
+  placeholder="${ph??(f.ph!=null?inr(f.ph):'')}"></div>`;
+}
+function unitField(s,id,key,ukey,lab,ph){
+ const f=F(s,key),u=s[ukey];
+ const p=u==='total'?'total ₹':(f.ph!=null?'₹'+inr(f.ph*(U[u]?.f||1))+'/'+U[u].sh:ph||'');
+ return `<div><label>${lab}<span class="as" data-as="${key}"></span></label><div class="pair">
+  <input data-id="${id}" data-f="${key}" value="${s[key]??''}" inputmode="decimal" placeholder="${p}">
+  <select class="unitsel" data-id="${id}" data-f="${ukey}">${Object.entries(U).map(([k,v])=>
+   `<option value="${k}" ${k===u?'selected':''}>/${v.sh}</option>`).join('')}
+   <option value="total" ${u==='total'?'selected':''}>total ₹</option></select></div></div>`;
+}
+function paneHTML(id){
+ const s=D[id],others=IDS().filter(k=>k!==id);
+ const mkKeys=CLS[s.cls]?.mk?Object.keys(MKT[CLS[s.cls].mk]):[];
+ return `<div class="card pane" data-id="${id}">
+ <div class="ptop"><span class="plab">Deal ${id}</span><span class="badge g" data-badge>Awaiting input</span></div>
+ <label>Asset class</label>
+ <select data-id="${id}" data-f="cls">${Object.entries(CLS).map(([k,v])=>
+  `<option value="${k}" ${k===s.cls?'selected':''}>${v.lab}</option>`).join('')}</select>
+ ${s.cls?`<label>Reference location <span class="as" style="color:var(--faint)">optional, fills blanks</span></label>
+ <select data-id="${id}" data-f="area">${mkKeys.map(k=>
+  `<option ${k===s.area?'selected':''}>${k}</option>`).join('')}</select>
+ <div class="dates">
+  <div><label>${s.cls==='land'?'Purchase date':'Booking / purchase date'}<span class="as" data-as="buy"></span></label>
+   <input type="month" data-id="${id}" data-f="buy" value="${s.buy??''}"></div>
+  ${s.cls==='uc'?`<div><label>Expected possession<span class="as" data-as="poss"></span></label>
+   <input type="month" data-id="${id}" data-f="poss" value="${s.poss??''}"></div>`
+  :`<div><label>Ready since <span class="as" style="color:var(--faint)">optional</span></label>
+   <input type="month" data-id="${id}" data-f="poss" value="${s.poss??''}"></div>`}
+ </div>
+ <div class="hint" data-hint="dates"></div>
+ <div><label>Plot / saleable area</label><div class="pair">
+  <input data-id="${id}" data-f="sqft" value="${s.sqft??''}" inputmode="decimal"
+   placeholder="${s.cls==='land'?'e.g. 424':'e.g. 2200'}">
+  <select class="unitsel" data-id="${id}" data-f="unit">${Object.entries(U).map(([k,v])=>
+   `<option value="${k}" ${k===s.unit?'selected':''}>${v.sh}</option>`).join('')}</select></div>
+  <div class="hint" data-hint="area"></div></div>
+ ${unitField(s,id,'rate','runit','Your price')}
+ <div class="hint" data-hint="rate"></div>
+ ${unitField(s,id,'worth','wunit','Market value')}
+ <div class="g3">${fld(s,id,'y','Gross yield %')}${fld(s,id,'mu','Growth μ %')}${fld(s,id,'esc','Rent esc %')}</div>
+ <div class="g3">${fld(s,id,'gst','GST %')}${fld(s,id,'stamp','Stamp + reg %')}${fld(s,id,'maint','Maint ₹/sqft/mo')}</div>
+ ${s.cls==='land'?`<details ${s.build==='yes'?'open':''}><summary>Construction — build on this plot?</summary>
+  <div class="chips" style="margin-top:6px">
+   ${[['no','Hold as land'],['yes','Build on it']].map(([k,l])=>
+    `<button data-bt="${k}" data-id="${id}" aria-pressed="${(s.build||'no')===k}">${l}</button>`).join('')}</div>
+  ${s.build==='yes'?`
+  <div class="g3">${fld(s,id,'bsqft','Buildable sqft')}${fld(s,id,'bcost','Build ₹/sqft')}${fld(s,id,'brent','Rent ₹/sqft/mo')}</div>
+  <div class="g3">${fld(s,id,'bstart','Start in (yrs)')}${fld(s,id,'bmonths','Build months')}${fld(s,id,'bcap','Exit cap rate %')}</div>
+  <div class="g2">${fld(s,id,'bltv','Build loan LTV %')}<div></div></div>
+  <div class="hint" data-hint="build"></div>`
+  :'<div class="hint">Switch to <b>Build on it</b> to add construction cost, rent and the built-asset exit — and to see both branches compared.</div>'}
+ </details>`:''}
+ <details><summary>Loan and tax</summary>
+  <div class="g3">${fld(s,id,'ltv','Loan to value %','0')}${fld(s,id,'irate','Interest %')}${fld(s,id,'tenure','Tenure yrs')}</div>
+  <div class="g2">${fld(s,id,'tcg','Capital gains tax %')}${fld(s,id,'trent','Tax on rent %')}</div>
+  <div class="hint" data-hint="loan"></div>
+ </details>
+ <details><summary>Premiums, guidance value and risk</summary>
+  <div class="g3">${fld(s,id,'amen','Amenities ₹/sqft','0')}${fld(s,id,'floor','Floor rise ₹/sqft','0')}${fld(s,id,'face','Facing ₹/sqft','0')}</div>
+  <div class="g3">${fld(s,id,'park','Parking ₹ total','0')}${fld(s,id,'guide','Guidance ₹/sqft','0')}${fld(s,id,'sig','Volatility σ')}</div>
+  <div class="g3">${fld(s,id,'sup','Supply overhang 0–1')}${fld(s,id,'own','Self-occupied 0–1','0')}${fld(s,id,'itc','GST credit %','0')}</div>
+  ${s.cls==='land'?`<div class="g3">${fld(s,id,'fsi','Permissible FSI','e.g. 3')}</div>
+   <div class="hint">FSI is display-only: it converts your land price into a buildable ₹/sqft so it lines up with an apartment rate.</div>`:''}
+ </details>
+ `:'<div class="empty">Pick an asset class to begin, or load a sample below.</div>'}
+ <div class="tools">
+  <button class="btn" data-act="sample" data-id="${id}">Fill a sample</button>
+  ${s.cls?others.map(o=>`<button class="btn" data-act="copy" data-id="${id}" data-to="${o}">Copy to ${o}</button>`).join(''):''}
+  ${s.cls?`<button class="btn" data-act="wipe" data-id="${id}">Clear ${id}</button>`:''}</div>
+ <div data-slot="trend"></div>
+ <div data-slot="stack"></div><div data-slot="stat"></div></div>`;
+}
+function stackHTML(s){
+ if(!ready(s))return s.cls?'<div class="empty">Enter area and price to see the cost stack.</div>':'';
+ const c=cost(s),cf=conf(s),mk=mkOf(s),wf=F(s,'worth');
+ const bench=wf.user?wf.v:(mk?mk.psf:null);
+ const delta=bench?(c.eff/bench-1)*100:null;
+ const blab=wf.user?'your market value':(mk?s.area+' reference':'');
+ const sch=amort(c.loan/1e7,F(s,'irate').v,F(s,'tenure').v,NY);
+ return `<div class="stack">
+  <div class="srow"><span>Base · ${inr(AREA(s))} sqft × ₹${inr(F(s,'rate').v)}/sqft</span><b>${cr(c.base)}</b></div>
+  ${s.unit!=='sqft'?`<div class="srow sub2"><span>= ${inr(num(s.sqft)||0)} ${U[s.unit].sh} × ₹${inr(F(s,'rate').v*U[s.unit].f)}/${U[s.unit].sh}</span><b>converted</b></div>`:''}
+  <div class="srow"><span>Premiums, parking, legal</span><b>${cr(c.cons-c.base)}</b></div>
+  <div class="srow"><span>GST ${F(s,'gst').v}%${F(s,'itc').v>0&&F(s,'gst').v>0?` less ${F(s,'itc').v}% credit`:''}</span><b>${cr(c.gst)}</b></div>
+  <div class="srow"><span>Stamp duty + registration ${F(s,'stamp').v}%</span><b>${cr(c.duty)}</b></div>
+  ${c.stampOnGuide?`<div class="srow sub2"><span>charged on guidance value, not your price</span><b>note</b></div>`:''}
+  ${c.corpus?`<div class="srow"><span>Corpus + 24-month maintenance</span><b>${cr(c.corpus)}</b></div>`:''}
+  <div class="srow tot"><span>All-in cost</span><b>${cr(c.total)}</b></div>
+  ${c.loan>0?`<div class="srow"><span>Loan at ${F(s,'ltv').v}% LTV</span><b>${cr(c.loan)}</b></div>
+   <div class="srow"><span>Your equity</span><b>${cr(c.equity)}</b></div>
+   <div class="srow sub2"><span>repayment at ${F(s,'irate').v}% over ${F(s,'tenure').v} yrs</span><b>${cr(sch.annual*1e7)}/yr</b></div>`:''}
+  <div class="srow" style="margin-top:6px"><span>Effective ₹/sqft</span><b>₹${inr(c.eff)}</b></div>
+  <div class="srow"><span>Per sq yard, all-in</span><b>₹${inr(c.eff*9)}</b></div>
+  ${s.cls==='land'&&F(s,'fsi').v>0?`<div class="srow"><span>Buildable ₹/sqft at FSI ${F(s,'fsi').v}</span><b>₹${inr(c.eff/F(s,'fsi').v)}</b></div>`:''}
+  ${delta!==null?`<div class="srow"><span>All-in versus ${blab}</span>
+   <b class="${delta>0?'neg':'pos'}">${delta>0?'+':''}${delta.toFixed(0)}%</b></div>`:''}
+  ${(()=>{const bp=buildPlan(s);if(!bp.on)return '';
+   const ov=bp.total*1.06/1e7;
+   return `<div class="srow tot" style="margin-top:10px"><span>Construction (incl. ~6% overrun)</span><b>${cr(ov*1e7)}</b></div>
+   <div class="srow sub2"><span>${inr(bp.sqft)} sqft × ₹${inr(bp.psf)}/sqft</span><b>₹${inr(bp.total/bp.sqft)}/sqft</b></div>
+   <div class="srow tot"><span>Total project cost</span><b>${cr(c.total+ov*1e7)}</b></div>
+   <div class="srow"><span>Blended cost per built sqft</span><b>₹${inr((c.total+ov*1e7)/bp.sqft)}</b></div>
+   <div class="srow"><span>Rent at full occupancy</span><b>${cr(bp.sqft*bp.rent*12)}/yr</b></div>
+   <div class="srow"><span>Yield on total project cost</span><b>${((bp.sqft*bp.rent*12*.76)/(c.total+ov*1e7)*100).toFixed(1)}%</b></div>`})()}
+  <div class="srow"><span>Inputs you supplied</span><b>${cf.got} of ${cf.tot}</b></div>
+ </div>`;
+}
+function trendNote(s){
+ if(!s.cls)return '';
+ const tr=trend(s.cls,s.area);
+ if(!tr)return `<div class="hint">No published price history for ${s.area==='— custom —'?'a custom location':s.area} in this asset class — growth and volatility are estimates, not trend-derived. Enter your own.</div>`;
+ const lab=['1 yr','3 yr','5 yr','10 yr'];
+ const cells=tr.cagrs.map((v,i)=>`<div><div class="k">${lab[i]}</div>
+  <div class="v" style="font-size:15px;color:${v==null?'var(--faint)':v<0?'var(--neg)':'var(--ink)'}">${v==null?'—':v.toFixed(1)+'%'}</div></div>`).join('');
+ const g=TXNGAP[s.area];
+ return `<details open><summary>Published price history — ${s.area}</summary>
+  <div class="conv" style="margin-top:8px">${cells}
+   <div style="outline:1px solid var(--a)"><div class="k">Trend-implied μ</div>
+    <div class="v" style="font-size:15px;color:var(--a)">${tr.mu.toFixed(1)}%</div></div></div>
+  <div class="hint">Blended trend ${tr.raw.toFixed(1)}%/yr versus a city median of ${tr.city.toFixed(1)}%, so this
+   locality carries a ${tr.prem>=0?'+':''}${tr.prem.toFixed(1)}pt premium. That premium is applied to a
+   ${MC.anchor}% long-run anchor rather than the raw trend — the published windows start near a cyclical
+   floor, and compounding them forward turns a plot into a hundred crore.</div>
+  ${g?`<div class="hint" style="color:var(--hi)">These are asking prices. 99acres also reports registered
+   transactions here at ₹${inr(g.txn)}/sqft against ₹${inr(g.listed)}/sqft listed — a
+   ${Math.round((g.listed/g.txn-1)*100)}% gap. Treat the level, and the trend, as optimistic.</div>`:''}
+ </details>`;
+}
+function carryNote(s){
+ const c=cost(s);if(c.loan<=0)return '';
+ const g=F(s,'mu').v, y=F(s,'y').v*(1-Math.min(1,Math.max(0,F(s,'own').v))), i=F(s,'irate').v;
+ const sp=g+y-i, ltv=c.loan/c.total, mult=ltv<1?1/(1-ltv):10;
+ if(sp>=0)return `<div class="hint">Positive carry: the asset earns ${(g+y).toFixed(1)}% against ${i}% debt, so ${Math.round(ltv*100)}% leverage works for you.</div>`;
+ return `<div class="hint" style="color:var(--neg)"><b>Negative carry.</b> The asset grows ${g.toFixed(1)}%${y>0?` plus ${y.toFixed(1)}% net rent`:' with no rental income'}, against ${i}% debt — a ${sp.toFixed(1)}% spread. At ${Math.round(ltv*100)}% loan-to-value that is roughly <b>${(sp*mult).toFixed(0)}% a year</b> working against your equity. Lower the loan or the deal has to be carried by appreciation alone.</div>`;
+}
+function statHTML(id,r){
+ let gl='';TICKS.forEach(v=>gl+=`<div class="gl ${v?'':'z'}" style="left:${X(v)}%"></div>`);
+ const col=COL[id],IN=inflOf();
+ return `<div style="margin-top:14px"><label>${r.det?'Deterministic IRR — single path':'IRR on your equity, across paths'}</label>
+ <div class="track">${gl}
+  ${r.det?'':`<div class="band" style="left:${X(r.p5)}%;width:${Math.max(0,X(r.p95)-X(r.p5))}%"></div>
+  ${r.p5<IN?`<div class="tl" style="left:${X(r.p5)}%;width:${Math.max(0,X(Math.min(IN,r.p95))-X(r.p5))}%"></div>`:''}
+  <div class="iq" style="left:${X(r.p25)}%;width:${Math.max(0,X(r.p75)-X(r.p25))}%;background:${col}"></div>`}
+  <div class="md" style="left:${X(r.med)}%"></div></div>
+ <div class="ticks">${TICKS.map(v=>`<span style="left:${X(v)}%">${v}%</span>`).join('')}</div>
+ <div class="kpi">
+  <div><div class="k">Median IRR${D[id]&&D[id].cls==='land'?(r.bp&&r.bp.on?' · land + build':' · land only'):''} · ${r.hold}y</div><div class="v ${r.med>=IN?'pos':'neg'}">${r.med.toFixed(1)}%</div></div>
+  <div><div class="k">${r.det?'Worst case':'Worst 5% avg'}</div>
+   <div class="v ${r.det?'mut':(r.cvar>=0?'':'neg')}">${r.det?'n/a':r.cvar.toFixed(1)+'%'}</div></div>
+  <div><div class="k">Misses ${MC.fd}% FD</div>
+   <div class="v ${r.det?(r.med<MC.fd?'neg':'pos'):(r.pfd>50?'neg':'')}">${r.det?(r.med<MC.fd?'yes':'no'):r.pfd.toFixed(0)+'%'}</div></div>
+ </div>
+ ${D[id]&&D[id].cls==='land'&&!(r.bp&&r.bp.on)?'<div class="hint" style="color:var(--hi)">This is the <b>hold-as-land</b> figure — no construction, no rent, ever. If you intend to build, switch the Construction toggle on; the number above is not your plan.</div>':''}
+ ${carryNote(D[id])}
+ ${r.shortTerm?'<div class="hint" style="color:var(--hi)">Held under 24 months — gains taxed at the short-term slab rate, not the long-term rate.</div>':''}
+ ${r.tm.lag>0&&r.hold<r.tm.lag?`<div class="hint" style="color:var(--hi)">Your horizon ends before possession — modelled as an assignment sale: the buyer takes over the unpaid tranches, so you realise value less what you still owe.</div>`:''}
+ ${r.tm.lag>=4?`<div class="hint" style="color:var(--hi)">A ${r.tm.lag.toFixed(1)}-year build is embedded leverage — you get appreciation on money not yet paid, which lifts the IRR. Developers price that in, so check your rate is the construction-linked rate and not the one-time-payment rate before believing this number.</div>`:''}
+ </div>`;
+}
+/* ---------- fan chart ---------- */
+function chart(R){
+ const el=document.getElementById('chart'),lg=document.getElementById('lg');
+ const sets=IDS().filter(k=>R[k]).map(k=>({k,r:R[k],c:COL[k],
+  n:`${k} · ${D[k].area==='— custom —'?CLS[D[k].cls].lab:D[k].area}`}));
+ if(!sets.length){el.innerHTML='<div class="empty">The projection appears once a deal has an area and a price.</div>';
+  lg.innerHTML='';return}
+ const W=780,H=300,PL=76,PR=16,PT=22,PB=30;
+ const XM=Math.max(...sets.map(s=>s.r.xmax||EXITMAX()));
+ let lo=0,hi=0;
+ sets.forEach(({r})=>r.fan.slice(0,XM+1).forEach(f=>{if(!f)return;lo=Math.min(lo,f.p10);hi=Math.max(hi,f.p90)}));
+ if(hi-lo<.5){hi+=.5;lo-=.5}
+ const pad=(hi-lo)*.10;lo-=pad;hi+=pad;
+ const px=t=>PL+(XM>1?(t-1)/(XM-1):.5)*(W-PL-PR),py=v=>PT+(hi-v)/(hi-lo)*(H-PT-PB);
+ let g='';
+ for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4;
+  g+=`<line x1="${PL}" x2="${W-PR}" y1="${py(v)}" y2="${py(v)}" stroke="var(--line)"/>`
+   +`<text x="${PL-10}" y="${py(v)+4}" text-anchor="end" fill="var(--faint)" font-size="11"
+      font-family="IBM Plex Mono">${v.toFixed(1)}</text>`}
+ g+=`<line x1="${PL}" x2="${W-PR}" y1="${py(0)}" y2="${py(0)}" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+ const step=XM<=5?1:XM<=14?2:XM<=20?3:5;
+ for(let t=step;t<=XM;t+=step)g+=`<text x="${px(t)}" y="${H-9}" text-anchor="middle" fill="var(--faint)"
+  font-size="11" font-family="IBM Plex Mono">Y${t}</text>`;
+ const hx=px(Math.min(XM,HZ()));
+ g+=`<line x1="${hx}" x2="${hx}" y1="${PT}" y2="${H-PB}" stroke="var(--hi)" stroke-width="1.5" stroke-dasharray="3 3"/>`
+  +`<text x="${hx}" y="${PT-7}" text-anchor="middle" fill="var(--hi)" font-size="10.5"
+     font-family="Inter" font-weight="600">${HZ()}-year horizon</text>`;
+ g+=`<text x="14" y="${PT+(H-PT-PB)/2}" fill="var(--faint)" font-size="11" font-family="Inter"
+  text-anchor="middle" transform="rotate(-90 14 ${PT+(H-PT-PB)/2})">Net position, ₹ crore</text>`;
+ sets.forEach(({r,c})=>{
+  const pts=[];for(let t=1;t<=XM;t++)if(r.fan[t])pts.push([t,r.fan[t]]);
+  if(!pts.length)return;
+  if(!r.det){
+   const poly=(hiK,loK,op)=>{
+    const up=pts.map(([t,f])=>`${px(t)},${py(f[hiK])}`).join(' ');
+    const dn=pts.slice().reverse().map(([t,f])=>`${px(t)},${py(f[loK])}`).join(' ');
+    g+=`<polygon points="${up} ${dn}" fill="${c}" opacity="${op}"/>`};
+   poly('p90','p10',.12);poly('p75','p25',.18);}
+  g+=`<polyline points="${pts.map(([t,f])=>`${px(t)},${py(f.p50)}`).join(' ')}"
+   fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`;});
+ el.innerHTML=`<svg class="fan" viewBox="0 0 ${W} ${H}" role="img"
+  aria-label="Projected net position in crore rupees by holding year">${g}</svg>`;
+ lg.innerHTML=sets.map(({c,n})=>`<span><i style="background:${c}"></i>${n} — median</span>`).join('')
+  +(sets[0].r.det?'':'<span><i style="background:var(--faint);opacity:.4"></i>P10–P90</span>')
+  +'<span><i style="background:var(--faint)"></i>break-even</span>';
+}
+
+/* ---------- comparison table ---------- */
+const w_HZ=()=>HZ();
+function cmpTable(R){
+ const ids=IDS().filter(k=>R[k]);
+ const t=document.getElementById('cmp');
+ if(ids.length<2){t.parentElement.parentElement.style.display='none';return}
+ t.parentElement.parentElement.style.display='';
+ const det=R[ids[0]].det;
+ document.querySelector('#cmp').closest('.sec').querySelector('h2').textContent=
+  `Side by side — ${HZ()}-year horizon`;
+ const rows=[
+  ['Asset class',k=>CLS[D[k].cls].lab],
+  ['Strategy',k=>D[k].cls!=='land'?'buy and hold':(R[k].bp&&R[k].bp.on?'land + build':'hold as land')],
+  ['Location',k=>D[k].area==='— custom —'?'custom':D[k].area],
+  ['All-in cost',k=>cr(cost(D[k]).total)],
+  ['Your equity',k=>cr(cost(D[k]).equity)],
+  ['Effective ₹/sqft',k=>'₹'+inr(cost(D[k]).eff)],
+  ['Median IRR',k=>R[k].med.toFixed(1)+'%','hi'],
+  ['P5 (bad case)',k=>det?'n/a':R[k].p5.toFixed(1)+'%'],
+  ['Worst 5% average',k=>det?'n/a':R[k].cvar.toFixed(1)+'%'],
+  ['Misses '+MC.fd+'% FD',k=>det?(R[k].med<MC.fd?'yes':'no'):R[k].pfd.toFixed(0)+'%'],
+  ['Loses to inflation',k=>det?(R[k].med<inflOf()?'yes':'no'):R[k].preal.toFixed(0)+'%'],
+  ['Nominal loss risk',k=>det?(R[k].med<0?'yes':'no'):R[k].ploss.toFixed(1)+'%'],
+  ['Median hold to exit',k=>R[k].hold+' years'],
+  ['Income starts',k=>{const t=R[k].tm;
+    if(F(D[k],'y').v<=0)return 'never — no income';
+    return t.lag>0?ymLabel(t.buyN+t.lag):'immediately'}],
+  ['Leverage',k=>{const c=cost(D[k]);return c.loan>0?Math.round(c.loan/c.total*100)+'% LTV':'all cash'}],
+  ['Growth μ used',k=>{const s=D[k],tr=trend(s.cls,s.area);
+    return F(s,'mu').v.toFixed(1)+'% '+(F(s,'mu').user?'(yours)':tr?'(trend)':'(estimate)')}],
+  ['Blended history',k=>{const tr=trend(D[k].cls,D[k].area);return tr?tr.raw.toFixed(1)+'%/yr':'no data'}],
+  ['Carry spread',k=>{const s=D[k],c=cost(s);
+    if(c.loan<=0)return 'n/a';
+    const sp=F(s,'mu').v+F(s,'y').v*(1-Math.min(1,F(s,'own').v))-F(s,'irate').v;
+    return (sp>0?'+':'')+sp.toFixed(1)+'% a year'}],
+  ['Net position at horizon',k=>{const f=R[k].fan[Math.min(R[k].xmax,w_HZ())];return f?'₹'+f.p50.toFixed(2)+' cr':'—'}],
+  ['Gains taxed as',k=>R[k].shortTerm?'short-term':'long-term'],
+  ['Inputs supplied',k=>conf(D[k]).got+' of '+conf(D[k]).tot]];
+ t.querySelector('thead').innerHTML='<tr><th class="l">Measure</th>'+
+  ids.map(k=>`<th style="color:${COL[k]}">Deal ${k}</th>`).join('')+'</tr>';
+ t.querySelector('tbody').innerHTML=rows.map(([lab,fn,cls])=>
+  `<tr><td class="l">${lab}</td>${ids.map(k=>
+   `<td class="n" ${cls==='hi'?`style="font-weight:700;color:${COL[k]}"`:''}>${fn(k)}</td>`).join('')}</tr>`).join('');
+}
+/* ---------- verdict ---------- */
+function verdict(R){
+ const v=document.getElementById('verdict'),ids=IDS().filter(k=>R[k]);
+ if(!ids.length){v.innerHTML=`<div class="vhd"><span class="badge g">Nothing entered yet</span></div>
+  <p>Pick an asset class for Deal A, then enter an area and a price. You can compare a plot against an
+  apartment against a warehouse — the cost stack, the income logic and the exit friction all adjust to each.</p>`;
+  return{};}
+ if(ids.length===1){const k=ids[0],s=D[k],r=R[k],c=cost(s);
+  v.innerHTML=`<div class="vhd"><span class="badge">Deal ${k} only</span>
+   <span class="badge alt">${MODELS[MC.engine].lab}</span></div>
+   <p><b>${CLS[s.cls].lab}</b>, all-in <b>${cr(c.total)}</b>, equity <b>${cr(c.equity)}</b>,
+   median IRR <b>${r.med.toFixed(1)}%</b> over a ${r.hold}-year hold${r.det?'':`, missing a ${MC.fd}% deposit in ${r.pfd.toFixed(0)}% of paths`}.
+   Fill in a second deal to get a comparison.</p>`;
+  return{win:k};}
+ const sc=k=>R[k].det?R[k].med:R[k].med*.65+R[k].cvar*.35;
+ const order=ids.slice().sort((a,b)=>sc(b)-sc(a));
+ const w=order[0],r1=R[w],c1=cost(D[w]);
+ const rows=[],add=(ok,t)=>rows.push(`<div class="vrow"><i style="background:${ok?'var(--pos)':'var(--neg)'}">${ok?'✓':'!'}</i><span>${t}</span></div>`);
+ const rest=order.slice(1);
+ add(true,`<b>Return</b> — Deal ${w} leads at ${r1.med.toFixed(1)}% median, against ${rest.map(k=>`${k} at ${R[k].med.toFixed(1)}%`).join(' and ')}.`);
+ if(!r1.det){
+  const bestTail=order.slice().sort((a,b)=>R[b].cvar-R[a].cvar)[0];
+  add(bestTail===w,`<b>Downside</b> — worst-5% average of ${r1.cvar.toFixed(1)}%. ${bestTail===w?'Deal '+w+' also holds up best when things go wrong.':'Deal '+bestTail+' has the sturdier tail at '+R[bestTail].cvar.toFixed(1)+'% — you are being paid to accept a worse one.'}`);}
+ const cheap=order.slice().sort((a,b)=>cost(D[a]).equity-cost(D[b]).equity)[0];
+ add(cheap===w,`<b>Capital</b> — ${cr(c1.equity)} of equity${c1.loan>0?` on ${cr(c1.loan)} of debt`:''}. Taxes and premiums are ${(((c1.total-c1.base)/c1.total)*100).toFixed(0)}% of the all-in.`);
+ const wf=F(D[w],'worth'),mk=mkOf(D[w]),bench=wf.user?wf.v:(mk?mk.psf:null);
+ if(bench){const d=(c1.eff/bench-1)*100;
+  add(d<=0,`<b>Entry</b> — ${d>0?`a ${d.toFixed(0)}% premium to`:`${Math.abs(d).toFixed(0)}% below`} ${wf.user?'your own market value':'the reference rate'}.`);}
+ if(!r1.det)add(r1.pfd<50,`<b>Hurdle</b> — Deal ${w} misses a ${MC.fd}% deposit in ${r1.pfd.toFixed(0)}% of paths and loses to inflation in ${r1.preal.toFixed(0)}%.`);
+ const totC=ids.reduce((a,k)=>a+conf(D[k]).got,0),totT=ids.reduce((a,k)=>a+conf(D[k]).tot,0);
+ add(totC/totT>=.5,`<b>Confidence</b> — ${totC} of ${totT} inputs are yours; the rest are the flagged assumptions in each field.`);
+ const dom=!r1.det&&rest.every(k=>r1.med>R[k].med&&r1.cvar>R[k].cvar);
+ v.innerHTML=`<div class="vhd"><span class="badge">Deal ${w} — ${CLS[D[w].cls].lab}</span>
+  <span class="badge ${STRESS[MC.engine]?'bad':'alt'}">${MODELS[MC.engine].lab}</span>
+  ${dom?'<span class="badge alt">Wins on return and downside</span>':''}</div>
+  <p>Over <b>${HZ()} year${HZ()>1?'s':''}</b> under <b>${MODELS[MC.engine].lab}</b>, Deal ${w} ranks first of ${ids.length}.
+  ${dom?'It leads on the median and in the worst 5% of paths, so the conclusion barely depends on how you weight risk.'
+   :'It does not lead on every measure — read the lines below before treating this as settled.'}
+  ${STRESS[MC.engine]?' Remember this is a deliberate stress scenario, not a forecast.':''}</p>
+  <div class="vlist">${rows.join('')}</div>`;
+ return{win:w,order};
+}
+/* ---------- tornado ---------- */
+function tornado(){
+ const el=document.getElementById('tor'),ids=IDS().filter(k=>ready(D[k]));
+ if(!ids.length){el.innerHTML='<span class="mut">Enter a deal to see which input matters most.</span>';return}
+ const k0=ids[0],s={...D[k0]};
+ const knobs=[['rate','Your price',.10],['worth','Market value',.10],['y','Gross yield',.20],
+  ['mu','Growth μ',.20],['sig','Volatility σ',.25],['stamp','Stamp duty %',.30],
+  ['gst','GST %',.30],['maint','Maintenance',.30],['sqft','Area',.10],
+  ['ltv','Loan to value',.30],['irate','Interest rate',.20],['tcg','Capital gains tax',.30]];
+ const res=knobs.map(([k,lab,pct])=>{
+  const b=F(s,k).v;if(!b)return{lab,d:0,pct};
+  const up={...s};up[k]=String(b*(1+pct));
+  const dn={...s};dn[k]=String(Math.max(0,b*(1-pct)));
+  if(k==='rate'||k==='worth'){up[k]=String(b*(1+pct)*(U[k==='rate'?s.runit:s.wunit]?.f||1));
+   dn[k]=String(b*(1-pct)*(U[k==='rate'?s.runit:s.wunit]?.f||1));}
+  const a=run(up,cost(up),600).med,c=run(dn,cost(dn),600).med;
+  return{lab,d:Math.abs(a-c),pct};
+ }).filter(x=>x.d>.02).sort((a,b)=>b.d-a.d).slice(0,7);
+ const mx=Math.max(...res.map(x=>x.d),.1);
+ el.innerHTML=(res.length?`<div class="hint" style="margin:0 0 4px">Measured on Deal ${k0}.</div>`:'')+
+  (res.length?res.map(x=>`<div class="trow"><span class="mut">${x.lab} ±${(x.pct*100)|0}%</span>
+  <div class="tbar"><i style="width:${x.d/mx*100}%"></i></div>
+  <span class="tv">${x.d.toFixed(2)} pt</span></div>`).join('')
+  :'<span class="mut">No single input moves the median measurably at these settings.</span>');
+}
+/* ---------- models + glossary UI ---------- */
+function modelsUI(){
+ const card=([k,m])=>`<button class="mcard" data-m="${k}" aria-pressed="${MC.engine===k}">
+  <b>${m.lab}</b><code>${m.tag}</code><span class="tech">${m.tech}</span><span class="why">${m.why}</span></button>`;
+ document.getElementById('modelsA').innerHTML=Object.entries(MODELS).filter(([,m])=>m.grp==='A').map(card).join('');
+ document.getElementById('modelsB').innerHTML=Object.entries(MODELS).filter(([,m])=>m.grp==='B').map(card).join('');
+ const dis=k=>{
+  if(k==='nu')return baseEngine()!=='tcop';
+  if(k==='phi')return baseEngine()==='det';
+  if(k==='rho')return baseEngine()==='indep'||baseEngine()==='det';
+  if(k==='paths')return baseEngine()==='det';
+  if(k==='patience')return MC.exit!=='patient';
+  if(k==='revert')return MC.engine!=='trend';
+  return false};
+ const P=[['anchor','Long-run anchor %',0,20,.1],['revert','Reversion rate',.3,.98,.01],
+  ['patience','Extra years you can wait',0,8,1],['nu','Tail heaviness ν',2.5,30,.5],
+  ['phi','Cycle persistence φ',0,.95,.01],['rho','Factor correlation ρ',0,.95,.01],
+  ['paths','Simulated paths',200,8000,100],['infl','Inflation %',0,15,.1],
+  ['fd','Deposit hurdle %',0,15,.1]];
+ document.getElementById('params').innerHTML=
+  `<div><label>Exit rule</label><select data-p="exit">
+   <option value="patient" ${MC.exit==='patient'?'selected':''}>Patient — wait out a soft market past the horizon</option>
+   <option value="fixed" ${MC.exit==='fixed'?'selected':''}>Fixed — sell exactly at the horizon</option></select></div>`
+  +P.map(([k,l,mn,mx,st])=>`<div><label>${l}</label>
+   <input data-p="${k}" type="number" min="${mn}" max="${mx}" step="${st}" value="${MC[k]}"
+    ${dis(k)?'disabled style="opacity:.4"':''}></div>`).join('');
+ const m=MODELS[MC.engine];
+ document.getElementById('modelnote').className='warn'+(STRESS[MC.engine]?' bad':'');
+ document.getElementById('modelnote').innerHTML=
+  `<b>Currently running: ${m.lab}.</b> ${m.tech} <br><br><b>Why you'd pick it —</b> ${m.why}
+   ${STRESS[MC.engine]?'<br><br>This is a scenario, not a probability. It answers "could I survive this", not "how likely is this". Compare it against the t-copula default rather than reading it alone.':''}`;
+ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{
+  MC.engine=b.dataset.m;
+  if(MC.engine==='stagflation'&&MC.infl<9)MC._savedInfl=MC.infl;
+  modelsUI();render()});
+ document.querySelectorAll('[data-p]').forEach(el=>el.onchange=()=>{
+  const k=el.dataset.p;
+  MC[k]=k==='exit'?el.value:(isFinite(parseFloat(el.value))?parseFloat(el.value):MC[k]);
+  if(k==='paths')MC.paths=Math.max(200,Math.min(8000,MC.paths));
+  if(k==='nu')MC.nu=Math.max(2.5,Math.min(30,MC.nu));
+  if(k==='phi')MC.phi=Math.max(0,Math.min(.95,MC.phi));
+  if(k==='rho')MC.rho=Math.max(0,Math.min(.95,MC.rho));
+  if(k==='patience')MC.patience=Math.max(0,Math.min(8,Math.round(MC.patience)));
+  if(k==='anchor')MC.anchor=Math.max(0,Math.min(20,MC.anchor));
+  if(k==='revert')MC.revert=Math.max(.3,Math.min(.98,MC.revert));
+  SHOCK_KEY='';modelsUI();render()});
+}
+/* ---------- build-vs-hold decision ---------- */
+function solveBreakEven(s,lo,hi,target){
+ for(let k=0;k<16;k++){const mid=(lo+hi)/2;
+  const t={...s,brent:String(mid)};
+  const v=run(t,cost(t),700,true).med;
+  if(v<target)lo=mid;else hi=mid}
+ return (lo+hi)/2;
+}
+function buildUI(){
+ const sec=document.getElementById('buildsec'),out=document.getElementById('buildout');
+ const ids=IDS().filter(k=>D[k].cls==='land'&&ready(D[k]));
+ if(!ids.length){sec.hidden=true;return}
+ sec.hidden=false;
+ out.innerHTML=ids.map(k=>{
+  const s=D[k],c=cost(s),bp=buildPlan(s,true);
+  if(!bp.on)return `<div class="card" style="padding:16px 18px;margin-bottom:12px">
+   <h3>Deal ${k} · ${s.area}</h3>
+   <p class="note">Enter a buildable area and a build rate under <b>Construction</b> to compare the two branches.</p></div>`;
+  const hold=run(s,c,undefined,false), built=run(s,c,undefined,true);
+  const proj=c.total+bp.total*1.06;
+  const be=solveBreakEven(s,2,120,hold.med);
+  const win=built.med>hold.med?'build':'hold';
+  const gap=Math.abs(built.med-hold.med);
+  const rows=[
+   ['Capital at risk',cr(c.equity),cr(c.equity+bp.total*1.06*(1-bp.ltv))],
+   ['Total project cost',cr(c.total),cr(proj)],
+   ['Median IRR',hold.med.toFixed(1)+'%',built.med.toFixed(1)+'%','hi'],
+   ['P5 (bad case)',hold.det?'n/a':hold.p5.toFixed(1)+'%',built.det?'n/a':built.p5.toFixed(1)+'%'],
+   ['Worst 5% average',hold.det?'n/a':hold.cvar.toFixed(1)+'%',built.det?'n/a':built.cvar.toFixed(1)+'%'],
+   ['Misses '+MC.fd+'% FD',hold.det?'—':hold.pfd.toFixed(0)+'%',built.det?'—':built.pfd.toFixed(0)+'%'],
+   ['Nominal loss risk',hold.det?'—':hold.ploss.toFixed(1)+'%',built.det?'—':built.ploss.toFixed(1)+'%'],
+   ['Income over the hold','none — land earns nothing',cr(bp.sqft*bp.rent*12*.76)+'/yr at full occupancy'],
+   ['Net position at horizon',
+    hold.fan[Math.min(hold.xmax,HZ())]?'₹'+hold.fan[Math.min(hold.xmax,HZ())].p50.toFixed(2)+' cr':'—',
+    built.fan[Math.min(built.xmax,HZ())]?'₹'+built.fan[Math.min(built.xmax,HZ())].p50.toFixed(2)+' cr':'—']];
+  return `<div class="card" style="padding:16px 18px;margin-bottom:12px">
+   <div class="vhd"><span class="badge">Deal ${k} · ${s.area}</span>
+    <span class="badge ${win==='build'?'':'g'}">${win==='build'?'Building wins by '+gap.toFixed(1)+' pts':'Holding wins by '+gap.toFixed(1)+' pts'}</span>
+    <span class="badge alt">${HZ()}-year horizon</span></div>
+   <div class="scroll" style="margin-top:12px"><table><thead><tr><th class="l">Measure</th>
+    <th>Hold as land</th><th>Build on it</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td class="l">${r[0]}</td>
+     <td class="n" ${r[3]==='hi'?'style="font-weight:700"':''}>${r[1]}</td>
+     <td class="n" ${r[3]==='hi'?`style="font-weight:700;color:${COL[k]}"`:''}>${r[2]}</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="warn ${win==='build'?'':'bad'}" style="margin-top:12px">
+    <b>Break-even rent: ₹${be.toFixed(0)}/sqft/month.</b>
+    You have entered ₹${bp.rent.toFixed(0)}. ${bp.rent>=be
+     ? `Above break-even, so building adds return — but it also adds ${cr(bp.total*1.06*(1-bp.ltv))} of capital and a construction you have to manage. The gap is ${gap.toFixed(1)} points a year.`
+     : `Below break-even, so construction destroys value at this rent. You would be spending ${cr(bp.total*1.06*(1-bp.ltv))} to earn less than the plot earns doing nothing.`}
+    <br><br><b>What outweighs what.</b> ${
+     built.cvar>hold.cvar
+      ? `Building also improves the downside — worst-5% moves from ${hold.cvar.toFixed(1)}% to ${built.cvar.toFixed(1)}% — because rent arrives whether or not the market cooperates, while bare land depends entirely on resale.`
+      : `Building worsens the downside — worst-5% moves from ${hold.cvar.toFixed(1)}% to ${built.cvar.toFixed(1)}% — because you are committing more capital into the same cycle, and a half-finished building in a soft market is the worst asset on this page.`}
+    ${hold.pfd>80?` Note that holding misses a ${MC.fd}% deposit in ${hold.pfd.toFixed(0)}% of paths, so "do nothing" is not a safe default here either.`:''}
+   </div></div>`}).join('');
+}
+function histUI(){
+ const t=document.getElementById('hist');
+ const rows=[];
+ for(const k of ['flat','land'])for(const area of Object.keys(HIST[k])){
+  const cls=k==='land'?'land':'ready', tr=trend(cls,area);
+  if(!tr)continue;
+  rows.push({area,k,c:tr.cagrs,raw:tr.raw,prem:tr.prem,mu:tr.mu,sig:tr.sig});}
+ rows.sort((a,b)=>a.k===b.k?b.raw-a.raw:(a.k<b.k?-1:1));
+ t.querySelector('thead').innerHTML=`<tr><th class="l">Locality</th><th class="l">Type</th>
+  <th>1 yr</th><th>3 yr</th><th>5 yr</th><th>10 yr</th><th>Blended</th><th>vs city</th>
+  <th>μ used</th><th>σ used</th></tr>`;
+ const f=v=>v==null?'—':v.toFixed(1)+'%';
+ t.querySelector('tbody').innerHTML=rows.map(r=>`<tr>
+  <td class="l">${r.area}</td><td class="l mut">${r.k==='land'?'land':'flats'}</td>
+  ${r.c.map(v=>`<td class="n" ${v!=null&&v<0?'style="color:var(--neg)"':''}>${f(v)}</td>`).join('')}
+  <td class="n">${r.raw.toFixed(1)}%</td>
+  <td class="n" style="color:${r.prem>=0?'var(--pos)':'var(--neg)'}">${r.prem>=0?'+':''}${r.prem.toFixed(1)}pt</td>
+  <td class="n" style="font-weight:700;color:var(--a)">${r.mu.toFixed(1)}%</td>
+  <td class="n">${r.sig.toFixed(1)}</td></tr>`).join('');
+ const gaps=Object.entries(TXNGAP).map(([a,g])=>
+  `${a} lists at ₹${inr(g.listed)}/sqft but registers at ₹${inr(g.txn)}/sqft, a ${Math.round((g.listed/g.txn-1)*100)}% gap`);
+ document.getElementById('histwarn').innerHTML=
+  `<b>Three things to hold in mind before trusting any of this.</b><br><br>
+   <b>These are asking prices, not transactions.</b> Where 99acres publishes both, the gap is large and
+   one-directional — ${gaps.join('; ')}. The index measures what sellers hope for.<br><br>
+   <b>The windows start at a cyclical floor.</b> Ten-year land figures here annualise to 16–37% a year,
+   which compounds a ₹1 crore plot to ₹190 crore over twenty-five years. That is an artefact of starting
+   in 2016, not a forecast. So history is used for <em>ranking</em> and <em>volatility</em> only; the level
+   is anchored at ${MC.anchor}% — rupee inflation plus about two points of long-run real appreciation —
+   and each locality's premium over the city median is shrunk by nearly half and capped at four points.<br><br>
+   <b>Coverage is partial.</b> Localities without a row have no published series in this asset class, so
+   their growth and volatility remain estimates and are labelled as such in the pane. Industrial has no
+   published locality series at all.`;
+}
+function glossUI(){
+ const grid=document.getElementById('gloss'),rail=document.getElementById('gfilter'),
+       det=document.getElementById('gdetail');
+ const counts={};GLOSS.forEach(g=>counts[g[2]]=(counts[g[2]]||0)+1);
+ rail.innerHTML=`<button data-g="all" aria-pressed="${GFILT==='all'}">All factors<b>${GLOSS.length}</b></button>`
+  +GGROUPS.map(([k,l])=>`<button data-g="${k}" aria-pressed="${GFILT===k}">${l}<b>${counts[k]||0}</b></button>`).join('');
+ const rows=GLOSS.map((g,i)=>[g,i]).filter(([g])=>GFILT==='all'||g[2]===GFILT);
+ grid.innerHTML=rows.map(([g,i])=>`<button class="gtile" data-gi="${i}" aria-pressed="${GSEL===i}">
+   ${g[3]?'<span class="td" title="high impact"></span>':''}
+   <span class="tn">${g[0]}</span><span class="tu">${g[1]}</span></button>`).join('');
+ if(GSEL==null||!rows.some(([,i])=>i===GSEL)){
+  det.innerHTML=`<div class="dk">Factor detail</div>
+   <h3 style="margin-top:10px">Select a factor</h3>
+   <p class="gempty" style="margin-top:10px">Every input, model setting and output measure on this page
+   is listed here — ${GLOSS.length} in all. Choose one for its technical definition, the plain reason it
+   earns a place in a property comparison, and where in the tool it is actually used.</p>
+   <div class="dsec">High impact</div>
+   <p class="gempty">${GLOSS.filter(g=>g[3]).map(g=>g[0]).join(' · ')}</p>`;
+ }else{
+  const [n,u,grp,hi,used,tech,why]=GLOSS[GSEL];
+  const gl=(GGROUPS.find(([k])=>k===grp)||['',''])[1];
+  det.innerHTML=`<div class="dk">${gl}</div><h3>${n}</h3><div class="du">${u}</div>
+   ${hi?'<span class="dhigh">high impact</span>':''}
+   <div class="dsec">Definition</div><p>${tech}</p>
+   <div class="dsec">Why it matters</div><p class="plain">${why}</p>
+   <div class="dsec">Used in</div><div class="dused">${used.map(x=>`<span>${x}</span>`).join('')}</div>`;
+ }
+ rail.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{GFILT=b.dataset.g;glossUI()});
+ grid.querySelectorAll('[data-gi]').forEach(b=>b.onclick=()=>{
+  const i=+b.dataset.gi; GSEL = GSEL===i ? null : i; glossUI();});
+}
+
+let GFILT='all',GSEL=null;
+/* ---------- converter ---------- */
+function converter(){
+ const sel=document.getElementById('cvU');
+ if(!sel.options.length)sel.innerHTML=Object.entries(U).map(([k,u])=>
+  `<option value="${k}" ${k==='sqyd'?'selected':''}>${u.lab}</option>`).join('');
+ const a=parseFloat(document.getElementById('cvA').value),
+       r=parseFloat(document.getElementById('cvR').value),uk=sel.value;
+ const out=document.getElementById('cvOut');
+ if(!isFinite(a)||a<=0){out.innerHTML='<div style="grid-column:1/-1" class="hint">Enter an area to convert.</div>';return}
+ const sq=a*U[uk].f;
+ const cells=Object.entries(U).map(([k,u])=>
+  `<div><div class="k">${u.lab}</div><div class="v">${(sq/u.f).toLocaleString('en-IN',{maximumFractionDigits:sq/u.f<10?3:2})}</div></div>`);
+ if(isFinite(r)&&r>0){const total=r*a,psf=total/sq;
+  cells.push(`<div style="outline:1px solid var(--a)"><div class="k">Total value</div><div class="v" style="color:var(--a)">₹${(total/1e7).toFixed(2)} cr</div></div>`);
+  cells.push(`<div><div class="k">₹ per sq ft</div><div class="v">₹${inr(psf)}</div></div>`);
+  cells.push(`<div><div class="k">₹ per sq yard</div><div class="v">₹${inr(psf*9)}</div></div>`);
+  cells.push(`<div><div class="k">₹ per acre</div><div class="v">₹${(psf*43560/1e7).toFixed(2)} cr</div></div>`);}
+ out.innerHTML=cells.join('');
+}
+/* ---------- horizon control ---------- */
+function horizonUI(){
+ const el=document.getElementById('hz');
+ const R=compute(),ids=IDS().filter(k=>R[k]);
+ let note;
+ if(!ids.length)note='Pick a holding period. Every number on the page — returns, tax treatment, the chart — is measured over it.';
+ else{const parts=ids.map(k=>`Deal ${k} <b>${R[k].med.toFixed(1)}%</b>`).join(' · ');
+  note=`Over ${HZ()} year${HZ()>1?'s':''}: ${parts}.`
+   +(HZ()<2?' Under 24 months, gains are short-term — taxed at your slab rate.':'');}
+ el.innerHTML=`<span class="lb">Investment horizon</span>
+  <div class="hzbtns">${HORIZONS.map(y=>
+   `<button data-hz="${y}" aria-pressed="${HZ()===y}">${y} year${y>1?'s':''}</button>`).join('')}</div>
+  <span class="note">${note}</span>`;
+ document.querySelectorAll('[data-hz]').forEach(b=>b.onclick=()=>{
+  MC.horizon=+b.dataset.hz;modelsUI();render()});
+}
+/* ---------- samples & actions ---------- */
+function thisMonth(){const d=new Date();
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+const SAMPLE={
+ land:{area:'Sainikpuri',buy:thisMonth(),sqft:'424',unit:'sqyd',rate:'90000',runit:'sqyd',
+  worth:'93000',wunit:'sqyd',fsi:'3',gst:'0',stamp:'6',maint:'0',mu:'6'},
+ ready:{area:'Khajaguda',buy:thisMonth(),sqft:'2200',unit:'sqft',rate:'9200',runit:'sqft',
+  gst:'0',stamp:'6',maint:'3.5'},
+ uc:{area:'Kokapet / Neopolis',buy:thisMonth(),poss:'2028-11',sqft:'5735',unit:'sqft',rate:'9000',
+  runit:'sqft',worth:'11350',wunit:'sqft',gst:'5',stamp:'6',amen:'600',floor:'340',face:'550',
+  park:'2000000',maint:'5',own:'1'},
+ ind:{area:'Medchal warehouse belt',buy:thisMonth(),sqft:'40000',unit:'sqft',rate:'2800',
+  runit:'sqft',gst:'12',stamp:'6',itc:'100',maint:'1'}};
+function act(a,id,to){
+ if(a==='copy'&&to&&D[to]){D[to]=JSON.parse(JSON.stringify(D[id]))}
+ else if(a==='wipe'){D[id]=BLANK()}
+ else if(a==='sample'){const cls=D[id].cls||'ready';
+  D[id]=Object.assign(BLANK(),{cls},SAMPLE[cls]||SAMPLE.ready)}
+ render();
+}
+/* ---------- orchestration ---------- */
+function compute(){
+ const R={};
+ IDS().forEach(k=>{const s=D[k];R[k]=ready(s)?run(s,cost(s)):null});
+ return R;
+}
+function derived(){
+ const R=compute(),v=verdict(R);
+ IDS().forEach(k=>{
+  const s=D[k],pane=document.querySelector(`.pane[data-id="${k}"]`);
+  if(!pane)return;
+  const tn=pane.querySelector('[data-slot=trend]');
+  if(tn){const open=tn.querySelector('details')?tn.querySelector('details').open:true;
+   tn.innerHTML=trendNote(s);
+   const dt=tn.querySelector('details');if(dt)dt.open=open;}
+  const sk=pane.querySelector('[data-slot=stack]');if(sk)sk.innerHTML=stackHTML(s);
+  const st=pane.querySelector('[data-slot=stat]');if(st)st.innerHTML=R[k]?statHTML(k,R[k]):'';
+  const bd=pane.querySelector('[data-badge]');
+  if(bd){
+   if(!ready(s)){bd.className='badge g';bd.textContent='Awaiting input'}
+   else if(v.win===k){bd.className='badge';bd.textContent=IDS().filter(x=>R[x]).length>1?'Best fit':'Only deal'}
+   else{bd.className='badge g';bd.textContent='Runner-up'}}
+  pane.querySelectorAll('input[data-f]').forEach(el=>{
+   const key=el.dataset.f,f=F(s,key);
+   el.className=(!f.user&&ready(s))?'assumed':'';
+   if(!el.value&&f.ph!=null){
+    const ut=key==='rate'?s.runit:key==='worth'?s.wunit:null;
+    el.placeholder=ut==='total'?'total ₹':(ut?'₹'+inr(f.ph*(U[ut]?.f||1))+'/'+U[ut].sh:inr(f.ph));}});
+  pane.querySelectorAll('.as[data-as]').forEach(sp=>{
+   sp.textContent=(!F(s,sp.dataset.as).user&&ready(s))?'assumed':''});
+  const ha=pane.querySelector('[data-hint=area]');
+  if(ha)ha.textContent=(AREA(s)>0&&s.unit!=='sqft')?'= '+inr(AREA(s))+' sq ft':'';
+  const hr=pane.querySelector('[data-hint=rate]');
+  if(hr)hr.textContent=ready(s)?`= ₹${inr(F(s,'rate').v)}/sqft · ${cr(F(s,'rate').v*AREA(s))} base`:'';
+  const hd=pane.querySelector('[data-hint=dates]');
+  if(hd){const t=timing(s);const bits=[];
+   if(t.dated&&t.elapsed>.08)bits.push(`bought ${ymLabel(t.buyN)}, already held ${t.elapsed.toFixed(1)} yr`);
+   else if(t.dated)bits.push(`purchase ${ymLabel(t.buyN)}`);
+   if(t.lag>0)bits.push(`${t.possDated?'possession':'assumed possession'} ${ymLabel(t.buyN+t.lag)} — ${t.lag.toFixed(1)} yr from purchase`);
+   if(t.dated&&t.elapsed>.08)bits.push(`horizon ends ${ymLabel(t.buyN+HZ())}`);
+   hd.textContent=bits.join(' · ');
+   hd.style.color=(t.lag>HZ()&&s.cls==='uc')?'var(--hi)':'';}
+  const hb=pane.querySelector('[data-hint=build]');
+  if(hb){const bp=buildPlan(s);
+   hb.textContent=bp.on?`${inr(bp.sqft)} sqft at ₹${inr(bp.psf)} = ${cr(bp.total)} build · complete about ${(bp.start+bp.dur).toFixed(1)} yr after purchase · rent ${cr(bp.sqft*bp.rent*12)}/yr gross`:'';}
+  const hl=pane.querySelector('[data-hint=loan]');
+  if(hl){const c=ready(s)?cost(s):null;
+   hl.textContent=c&&c.loan>0?`Equity ${cr(c.equity)} · loan ${cr(c.loan)} · IRR is measured on your equity only.`
+    :'Leave loan to value at 0 for an all-cash purchase.';}});
+ chart(R);cmpTable(R);tornado();progress();horizonUI();histUI();buildUI();
+ return R;
+}
+function progress(){
+ const ids=IDS();
+ const got=ids.reduce((a,k)=>a+conf(D[k]).got,0),tot=ids.reduce((a,k)=>a+conf(D[k]).tot,0);
+ const steps=[['Asset class',ids.some(k=>D[k].cls)],['Area & price',ids.some(k=>ready(D[k]))],
+  ['Two deals',ids.filter(k=>ready(D[k])).length>=2],
+  ['Taxes set',ids.some(k=>F(D[k],'gst').user||F(D[k],'stamp').user)],
+  ['Growth view',ids.some(k=>F(D[k],'mu').user)],
+  ['Stress tested',!!STRESS[MC.engine]]];
+ document.getElementById('prog').innerHTML=
+  `<span class="pt">${got} of ${tot} inputs are yours</span>
+   <div class="meter"><i style="width:${tot?got/tot*100:0}%"></i></div>
+   <div class="chips">${steps.map(([l,on])=>`<span class="chip ${on?'on':''}">${on?'✓ ':''}${l}</span>`).join('')}</div>`;
+}
+let TMR=null;
+function bind(){
+ document.querySelectorAll('[data-act]').forEach(b=>
+  b.onclick=()=>act(b.dataset.act,b.dataset.id,b.dataset.to));
+ document.querySelectorAll('[data-bt]').forEach(b=>
+  b.onclick=()=>{D[b.dataset.id].build=b.dataset.bt;render()});
+ document.querySelectorAll('[data-f]').forEach(el=>{
+  const s=D[el.dataset.id],k=el.dataset.f;
+  if(!s)return;
+  if(el.tagName==='SELECT'){
+   el.onchange=()=>{s[k]=el.value;
+    if(k==='cls'){s.area='— custom —';if(el.value==='land'){s.unit='sqyd';s.runit='sqyd';s.wunit='sqyd'}}
+    render()};
+  }else{
+   el.oninput=()=>{s[k]=el.value;clearTimeout(TMR);TMR=setTimeout(derived,180)};
+   el.onchange=()=>{s[k]=el.value;clearTimeout(TMR);derived()};}});
+}
+function render(){
+ const ids=IDS();
+ const p=document.getElementById('panes');
+ p.style.setProperty('--nc',ids.length);
+ p.innerHTML=ids.map(paneHTML).join('');
+ document.getElementById('addC').hidden=!!D.C;
+ document.getElementById('dropC').hidden=!D.C;
+ bind();return derived();
+}
+document.getElementById('addC').onclick=()=>{D.C=BLANK();render()};
+document.getElementById('dropC').onclick=()=>{D.C=null;render()};
+document.getElementById('theme').onclick=e=>{
+ const d=document.documentElement.dataset.theme==='dark';
+ document.documentElement.dataset.theme=d?'light':'dark';e.target.textContent=d?'Dark':'Light'};
+document.getElementById('clear').onclick=()=>{D.A=BLANK();D.B=BLANK();D.C=null;render()};
+['cvA','cvR','cvU'].forEach(id=>{const el=document.getElementById(id);
+ el.oninput=converter;el.onchange=converter});
+modelsUI();glossUI();histUI();render();converter();
+
+/* Expose the model on window so it can be inspected or scripted from the console.
+   Getters, not copies, so live state is always visible. */
+Object.defineProperties(window,{
+ MODELS:{get:()=>MODELS},MC:{get:()=>MC},D:{get:()=>D},U:{get:()=>U},GLOSS:{get:()=>GLOSS},
+ MKT:{get:()=>MKT},CLS:{get:()=>CLS},STRESS:{get:()=>STRESS},SAMPLE:{get:()=>SAMPLE},
+ MP:{get:()=>MP},MR:{get:()=>MR},MT:{get:()=>MT},RG:{get:()=>RG},
+ SHOCK_KEY:{get:()=>SHOCK_KEY,set:v=>{SHOCK_KEY=v}},
+ IDS:{get:()=>IDS},ready:{get:()=>ready},BLANK:{get:()=>BLANK},AREA:{get:()=>AREA},
+ HORIZONS:{get:()=>HORIZONS},HZ:{get:()=>HZ},EXITMAX:{get:()=>EXITMAX},
+ HIST:{get:()=>HIST},TXNGAP:{get:()=>TXNGAP},MK:{get:()=>MK},COL:{get:()=>COL},
+ GGROUPS:{get:()=>GGROUPS},GFILT:{get:()=>GFILT,set:v=>{GFILT=v}},
+ GSEL:{get:()=>GSEL,set:v=>{GSEL=v}},
+ conf:{get:()=>conf},inflOf:{get:()=>inflOf},
+ baseEngine:{get:()=>baseEngine},num:{get:()=>num}
+});
+</script></body></html>
